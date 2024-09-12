@@ -1,6 +1,7 @@
 // components/Layout.js
 import Head from "next/head";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
+import "@fontsource/inter"; // Default weight 400
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -8,7 +9,7 @@ import Header from "@/components/header";
 import Sidebar from "@/components/sidebar";
 // import Footer from "@/components/footer";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 const Layout = ({ children }) => (
   <>
@@ -23,7 +24,8 @@ const Layout = ({ children }) => (
       <Sidebar />
       <div
         as="main"
-        className={`${inter.className} content-container flex-grow-1`}
+        className="content-container flex-grow-1"
+        // className={`${inter.className} content-container flex-grow-1`}
       >
         {children}
       </div>
