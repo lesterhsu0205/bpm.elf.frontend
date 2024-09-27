@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Content from "@/pages/content";
+import Content from "@/components/content";
 
 const DynamicPage = () => {
   const router = useRouter();

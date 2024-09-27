@@ -1,12 +1,13 @@
 // pages/onBoard.js
 import { useForm, FormProvider } from "react-hook-form";
 import { Form, Row, Button, Stack, Card } from "react-bootstrap";
-import _ from "lodash"
+import _ from "lodash";
 
 import Layout from "@/components/layout";
 import Text from "@/components/formElements/text";
 import TextArea from "@/components/formElements/textArea";
 import Select from "@/components/formElements/select";
+import Checkbox from "@/components/formElements/checkbox";
 import Description from "@/components/formElements/description";
 
 function Content({ config }) {
@@ -32,19 +33,12 @@ function Content({ config }) {
     console.info(data.device);
     console.info(data.apply_device_description);
 
-    
-
     for (let i = 0; i < config.tickets.length; i++) {
       for (let j = 0; j < config.tickets[i].inputs.length; j++) {
         if (config.tickets[i].inputs[j].type === "description") {
+          const compiled = _.template(config.tickets[i].inputs[j].template);
 
-
-          const compiled = _.template(config.tickets[i].inputs[j].template)
-
-          setValue(
-            config.tickets[i].inputs[j].key,
-            compiled(data)
-          );
+          setValue(config.tickets[i].inputs[j].key, compiled(data));
         }
       }
     }
@@ -128,6 +122,15 @@ function Content({ config }) {
                           } else if ("select" === input.type) {
                             return (
                               <Select
+                                key={input.key}
+                                label={input.label}
+                                idKey={input.key}
+                                options={input.options}
+                              />
+                            );
+                          } else if ("checkbox" === input.type) {
+                            return (
+                              <Checkbox
                                 key={input.key}
                                 label={input.label}
                                 idKey={input.key}

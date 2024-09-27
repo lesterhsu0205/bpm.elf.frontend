@@ -22,7 +22,7 @@ const TextArea = ({ label, idKey }) => {
   return (
     <InputGroup as={Col}>
       <InputGroup.Text>{label}</InputGroup.Text>
-      <Form.Control as="textarea" rows="5" {...register(idKey)} />
+      <Form.Control as="textarea" rows="3" {...register(idKey)} />
     </InputGroup>
   );
 };

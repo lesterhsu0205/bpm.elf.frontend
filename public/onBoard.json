@@ -20,7 +20,13 @@
             { "value": "系統整合應用部", "text": "系統整合應用部" },
             { "value": "營運支援系統部", "text": "營運支援系統部" },
             { "value": "台幣存匯系統部", "text": "台幣存匯系統部" },
-            { "value": "台幣共用系統部", "text": "台幣共用系統部" }
+            { "value": "台幣共用系統部", "text": "台幣共用系統部" },
+            { "value": "支付系統部", "text": "支付系統部" },
+            { "value": "風險系統部", "text": "風險系統部" },
+            { "value": "台幣放款系統部", "text": "台幣放款系統部" },
+            { "value": "保險系統部", "text": "保險系統部" },
+            { "value": "外匯暨信託系統部", "text": "外匯暨信託系統部" },
+            { "value": "QA暨資訊營管部", "text": "QA暨資訊營管部" }
           ]
         },
         { "type": "text", "label": "員工編號", "key": "staffId" },
@@ -29,7 +35,7 @@
       ]
     },
     {
-      "title": "設備",
+      "title": "設備 ",
       "inputs": [
         {
           "type": "select",
@@ -45,6 +51,75 @@
           "label": "需求說明",
           "key": "apply_device_description",
           "template": "[需求說明]\n${division} ${department} 新進同仁 ${staffId} ${engName} ${chiName} 新人到職申請 ${device}\n\n[執行單位]\n問管暨IDC作業管理部"
+        }
+      ]
+    },
+    {
+      "title": "安裝軟體",
+      "inputs": [
+        {
+          "type": "select",
+          "label": "申請安裝設備",
+          "key": "apply_install_device",
+          "options": [
+            { "value": "筆記型電腦", "text": "筆記型電腦" },
+            { "value": "桌上型電腦", "text": "桌上型電腦" },
+            { "value": "監控室電腦", "text": "監控室電腦" }
+          ]
+        },
+        {
+          "type": "textarea",
+          "label": "申請原因",
+          "key": "apply_install_reason"
+        },
+        { "type": "textarea", "label": "安裝軟體清單", "key": "softwareList" },
+        {
+          "type": "description",
+          "label": "需求說明",
+          "key": "install_software_description",
+          "template": "申請部門: ${division}/${department}\n申請安裝人員: ${staffId} ${engName} ${chiName}\n申請安裝設備: ${apply_install_device}\n申請原因:\n${apply_install_reason}\n安裝軟體資訊如下:\n*詳細資訊請參考附件\n${softwareList}\n\n[執行單位]\n問管暨IDC作業管理部"
+        }
+      ]
+    },
+    {
+      "title": "Bitbucket",
+      "inputs": [
+        {
+          "type": "checkbox",
+          "label": "環境",
+          "key": "env",
+          "options": [
+            { "value": "dev", "text": "dev" },
+            { "value": "stg", "text": "stg" },
+            { "value": "uat", "text": "uat" },
+            { "value": "prd", "text": "prd" }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "label": "需求類型",
+          "key": "require_type",
+          "options": [
+            { "value": "add", "text": "新增" },
+            { "value": "update", "text": "修改" },
+            { "value": "delete", "text": "刪除" }
+          ]
+        },
+        {
+          "type": "textarea",
+          "label": "申請原因",
+          "key": "bitbucket_apply_reason"
+        },
+        {
+          "type": "textarea",
+          "label": "申請的系統權限或角色",
+          "key": "bitbucket_authority_role"
+        },
+        {
+          "type": "description",
+          "label": "需求說明",
+          "key": "bitbucket_description",
+          "template": ""
         }
       ]
     }
