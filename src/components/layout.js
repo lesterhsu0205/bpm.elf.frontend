@@ -9,6 +9,9 @@ import Header from "@/components/header";
 import Sidebar from "@/components/sidebar";
 // import Footer from "@/components/footer";
 
+import { ToastContainer } from "react-toastify";
+
+
 // const inter = Inter({ subsets: ["latin"] });
 
 const Layout = ({ children }) => (
@@ -27,6 +30,7 @@ const Layout = ({ children }) => (
         className="content-container flex-grow-1"
         // className={`${inter.className} content-container flex-grow-1`}
       >
+        <ToastContainer />
         {children}
       </div>
     </div>
