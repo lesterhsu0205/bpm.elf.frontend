@@ -1,4 +1,4 @@
-// pages/onBoard.js
+import React, { use, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Form, Row, Button, Stack, Card } from "react-bootstrap";
 import _ from "lodash";
@@ -9,6 +9,7 @@ import TextArea from "@/components/formElements/textArea";
 import Select from "@/components/formElements/select";
 import Checkbox from "@/components/formElements/checkbox";
 import Description from "@/components/formElements/description";
+import { toast } from "react-toastify";
 
 function Content({ config }) {
   const {
@@ -24,6 +25,8 @@ function Content({ config }) {
     mode: "all",
   });
 
+  const [submitKey, setSubmitKey] = useState(null)
+
   // Watch all form fields for validate
   watch();
 
@@ -33,14 +36,21 @@ function Content({ config }) {
     console.info(data.device);
     console.info(data.apply_device_description);
 
-    for (let i = 0; i < config.tickets.length; i++) {
-      for (let j = 0; j < config.tickets[i].inputs.length; j++) {
-        if (config.tickets[i].inputs[j].type === "description") {
-          const compiled = _.template(config.tickets[i].inputs[j].template);
+    try {
+      for (let i = 0; i < config.tickets.length; i++) {
+        for (let j = 0; j < config.tickets[i].inputs.length; j++) {
+          if (
+            config.tickets[i].inputs[j].key === submitKey &&
+            config.tickets[i].inputs[j].type === "description"
+          ) {
+            const compiled = _.template(config.tickets[i].inputs[j].template);
 
-          setValue(config.tickets[i].inputs[j].key, compiled(data));
+            setValue(config.tickets[i].inputs[j].key, compiled(data));
+          }
         }
       }
+    } catch (Error) {
+      toast.warn(Error.message);
     }
   };
 
@@ -79,12 +89,6 @@ function Content({ config }) {
         formState={formState}
       >
         <Form noValidate onSubmit={handleSubmit(submit)}>
-          {/* {config ? (
-            <pre>{JSON.stringify(config, null, 2)}</pre>
-          ) : (
-            <p>Loading...</p>
-          )} */}
-
           {config &&
             config.tickets.map((ticket) => {
               const groupColumns = getGroupColumns(ticket.inputs);
@@ -101,12 +105,12 @@ function Content({ config }) {
                   </Card.Header>
                   <Card.Body>
                     {groupColumns.map((rawData, rawIndex) => (
-                      <Row key={rawIndex} className="mb-3">
-                        {rawData.map((input) => {
+                      <Row key={`row_${rawIndex}`} className="mb-3">
+                        {rawData.map((input, indexInRaw) => {
                           if ("text" === input.type) {
                             return (
                               <Text
-                                key={input.key}
+                                key={`${input.key}_${indexInRaw}`}
                                 label={input.label}
                                 idKey={input.key}
                               />
@@ -114,7 +118,7 @@ function Content({ config }) {
                           } else if ("textarea" === input.type) {
                             return (
                               <TextArea
-                                key={input.key}
+                                key={`${input.key}_${indexInRaw}`}
                                 label={input.label}
                                 idKey={input.key}
                               />
@@ -122,7 +126,7 @@ function Content({ config }) {
                           } else if ("select" === input.type) {
                             return (
                               <Select
-                                key={input.key}
+                                key={`${input.key}_${indexInRaw}`}
                                 label={input.label}
                                 idKey={input.key}
                                 options={input.options}
@@ -131,7 +135,7 @@ function Content({ config }) {
                           } else if ("checkbox" === input.type) {
                             return (
                               <Checkbox
-                                key={input.key}
+                                key={`${input.key}_${indexInRaw}`}
                                 label={input.label}
                                 idKey={input.key}
                                 options={input.options}
@@ -145,12 +149,25 @@ function Content({ config }) {
                     {ticket.inputs.map((input, index) => {
                       if (input.type === "description") {
                         return (
-                          <Description
-                            key={input.key}
-                            label={input.label}
-                            idKey={input.key}
-                            template={input.template}
-                          />
+                          <React.Fragment key={`${input.key}_${index}`}>
+                            <Row className="mb-3">
+                              <Stack className="mx-auto">
+                                <Button
+                                  variant="primary"
+                                  size="lg"
+                                  type="submit"
+                                  onClick={() => setSubmitKey(input.key)}
+                                >
+                                  建立
+                                </Button>
+                              </Stack>
+                            </Row>
+                            <Description
+                              label={input.label}
+                              idKey={input.key}
+                              template={input.template}
+                            />
+                          </React.Fragment>
                         );
                       }
                     })}
@@ -158,11 +175,6 @@ function Content({ config }) {
                 </Card>
               );
             })}
-          <Stack className="col-md-5 mx-auto">
-            <Button variant="primary" size="lg" type="submit">
-              建立
-            </Button>
-          </Stack>
         </Form>
       </FormProvider>
     </Layout>
