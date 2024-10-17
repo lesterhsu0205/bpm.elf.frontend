@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -83,62 +85,60 @@ const Settings = ({ jsonFileNames }) => {
   }, [router.isReady, router.basePath, focusFileName, clickEvt]);
   // In your React component:
   return (
-    <>
-      <Layout>
-        <Row className="mb-3">
-          <Col>
-            <Row className="mb-3">
-              <Col>
-                <strong>{focusFileName}</strong>
-              </Col>
-              <Col className="d-flex justify-content-end">
-                <ButtonGroup>
-                  <Button variant="secondary" onClick={saveData}>
-                    New
-                  </Button>
-                  <Button variant="secondary" onClick={saveData}>
-                    Update
-                  </Button>
-                  <Button variant="secondary" onClick={saveData}>
-                    Delete
-                  </Button>
-                </ButtonGroup>
-              </Col>
-            </Row>
-            <Row className="mb-3">
-              <JsonEditor
-                data={jsonDataRef.current}
-                setData={setJsonRefData} // optional
-                rootName=""
-                collapse={3}
-                showCollectionCount="when-closed"
-                maxWidth="100%"
-              />
-            </Row>
-          </Col>
-          <Col>
-            <strong>設定檔</strong>
-            {jsonFileNames.map((fileName, index) => (
-              <li key={index}>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setFocusFileName(fileName);
-                    SetClickEvt(clickEvt + 1);
-                  }}
-                >
-                  {fileName}
-                </a>
-              </li>
-            ))}
-          </Col>
-          <Col>
-            <pre>{JSON.stringify(jsonData, null, 2)}</pre>
-          </Col>
-        </Row>
-      </Layout>
-    </>
+    <Layout>
+      <Row className="mb-3">
+        <Col className="col-8">
+          <Row className="mb-3">
+            <Col>
+              <strong>{focusFileName}</strong>
+            </Col>
+            <Col className="d-flex justify-content-end">
+              <ButtonGroup>
+                <Button variant="secondary" className="bs-secondary" onClick={saveData}>
+                  New
+                </Button>
+                <Button variant="secondary" className="bs-secondary" onClick={saveData}>
+                  Update
+                </Button>
+                <Button variant="secondary" className="bs-secondary" onClick={saveData}>
+                  Delete
+                </Button>
+              </ButtonGroup>
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <JsonEditor
+              data={jsonDataRef.current}
+              setData={setJsonRefData} // optional
+              rootName=""
+              collapse={3}
+              showCollectionCount="when-closed"
+              maxWidth="100%"
+            />
+          </Row>
+        </Col>
+        <Col className="col-4">
+          <strong>設定檔</strong>
+          {jsonFileNames.map((fileName, index) => (
+            <li key={index}>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setFocusFileName(fileName);
+                  SetClickEvt(clickEvt + 1);
+                }}
+              >
+                {fileName}
+              </a>
+            </li>
+          ))}
+        </Col>
+        {/* <Col>
+          <pre>{JSON.stringify(jsonData, null, 2)}</pre>
+        </Col> */}
+      </Row>
+    </Layout>
   );
 };
 

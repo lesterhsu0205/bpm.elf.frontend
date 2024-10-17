@@ -1,11 +1,47 @@
+"use client";
+
+import {
+  Card,
+  Typography,
+  List,
+  ListItem,
+  ListItemPrefix,
+  ListItemSuffix,
+  Chip,
+  Accordion,
+  AccordionHeader,
+  AccordionBody,
+} from "@material-tailwind/react";
+import {
+  QueueListIcon,
+  PencilSquareIcon,
+  TicketIcon,
+  RectangleStackIcon,
+  PresentationChartBarIcon,
+  AdjustmentsHorizontalIcon,
+  ArrowTurnDownRightIcon,
+  ShoppingBagIcon,
+  UserCircleIcon,
+  Cog6ToothIcon,
+  HomeIcon,
+  InboxIcon,
+  PowerIcon,
+} from "@heroicons/react/24/solid";
+import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Nav } from "react-bootstrap";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import _ from "lodash"
+import _ from "lodash";
 
 const Sidebar = () => {
-  const [data, setData] = useState([]);
+  const [open, setOpen] = useState(0);
+
+  const handleOpen = (value) => {
+    setOpen(open === value ? 0 : value);
+  };
+
+  const [data, setData] = useState([,]);
 
   const router = useRouter();
 
@@ -35,28 +71,119 @@ const Sidebar = () => {
   }, [router.isReady, router.basePath]);
 
   return (
-    <Nav className="sidebar bg-light flex-column p-3">
-      <Nav.Item>
-        <Nav.Link as={Link} href="/">
-          Home
-        </Nav.Link>
-      </Nav.Item>
-
-      {data.map((setting, index) => (
-        <Nav.Item key={`${setting.file}_${index}`}>
-          <Nav.Link as={Link} href={`/${_.replace(setting.file, ".json", "")}`}>
+    <Card className="shadow-xl h-full overflow-y-auto">
+      <List>
+        <Link href="/">
+          <ListItem>
+            <ListItemPrefix>
+              <HomeIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            Home
+          </ListItem>
+        </Link>
+        <Accordion
+          open={open === 1}
+          icon={
+            <ChevronDownIcon
+              strokeWidth={2.5}
+              className={`mx-auto h-4 w-4 transition-transform ${
+                open === 1 ? "rotate-180" : ""
+              }`}
+            />
+          }
+        >
+          <ListItem className="p-0" selected={open === 1}>
+            <AccordionHeader
+              onClick={() => handleOpen(1)}
+              className="border-b-0 p-3"
+            >
+              <ListItemPrefix>
+                <RectangleStackIcon className="h-5 w-5" />
+              </ListItemPrefix>
+              <Typography color="blue-gray" className="mr-auto font-normal">
+                Compose ticket
+              </Typography>
+            </AccordionHeader>
+          </ListItem>
+          <AccordionBody className="py-0 px-3">
+            <List className="p-0">
+              <ListItem>
+                {/* <ListItemPrefix>
+                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                </ListItemPrefix> */}
+                <ListItemPrefix>
+                  <ArrowTurnDownRightIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                ticket1
+              </ListItem>
+              <ListItem>
+                <ListItemPrefix>
+                  <ArrowTurnDownRightIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                ticket2
+              </ListItem>
+              <ListItem>
+                <ListItemPrefix>
+                  <ArrowTurnDownRightIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                ticket3
+              </ListItem>
+            </List>
+          </AccordionBody>
+        </Accordion>
+        {data.map((setting, index) => (
+          <Link
+            key={`${setting.file}_${index}`}
+            href={`/${_.replace(setting.file, ".json", "")}`}
+          >
             {/* 透過傳參數去配對 json file 會顯示在 url 上，所以 json 命名應與 path name 一樣，如 /test -> test.json */}
             {/* href={{ pathname: "/test", param: { gg: "onboard" } }} */}
-            {setting.content.name}
-          </Nav.Link>
-        </Nav.Item>
-      ))}
-      <Nav.Item>
-        <Nav.Link as={Link} href="/settings">
-          設定
-        </Nav.Link>
-      </Nav.Item>
-    </Nav>
+            <ListItem>
+              <ListItemPrefix>
+                <TicketIcon className="h-5 w-5" />
+              </ListItemPrefix>
+              {setting.content.name}
+            </ListItem>
+          </Link>
+        ))}
+        {/* <ListItem>
+          <ListItemPrefix>
+            <InboxIcon className="h-5 w-5" />
+          </ListItemPrefix>
+          Inbox
+          <ListItemSuffix>
+            <Chip
+              value="14"
+              size="sm"
+              variant="ghost"
+              color="blue-gray"
+              className="rounded-full"
+            />
+          </ListItemSuffix>
+        </ListItem> */}
+        <Link href="/settings">
+          <ListItem>
+            <ListItemPrefix>
+              <PencilSquareIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            Settings
+          </ListItem>
+        </Link>
+      </List>
+    </Card>
+
+    // <Nav className="sidebar bg-light flex-column p-3">
+
+    //   {data.map((setting, index) => (
+    //     <Nav.Item key={`${setting.file}_${index}`}>
+    //       <Nav.Link as={Link} href={`/${_.replace(setting.file, ".json", "")}`}>
+    //         {/* 透過傳參數去配對 json file 會顯示在 url 上，所以 json 命名應與 path name 一樣，如 /test -> test.json */}
+    //         {/* href={{ pathname: "/test", param: { gg: "onboard" } }} */}
+    //         {setting.content.name}
+    //       </Nav.Link>
+    //     </Nav.Item>
+    //   ))}
+    // </Nav>
   );
 };
 

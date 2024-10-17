@@ -1,4 +1,6 @@
-import React, { use, useState } from "react";
+"use client"
+
+import React, { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Form, Row, Button, Stack, Card } from "react-bootstrap";
 import _ from "lodash";
@@ -153,7 +155,7 @@ function Content({ config }) {
                             <Row className="mb-3">
                               <Stack className="mx-auto">
                                 <Button
-                                  variant="primary"
+                                  className="bs-primary"
                                   size="lg"
                                   type="submit"
                                   onClick={() => setSubmitKey(input.key)}

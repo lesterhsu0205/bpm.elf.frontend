@@ -11,7 +11,6 @@ import Sidebar from "@/components/sidebar";
 
 import { ToastContainer } from "react-toastify";
 
-
 // const inter = Inter({ subsets: ["latin"] });
 
 const Layout = ({ children }) => (
@@ -23,15 +22,15 @@ const Layout = ({ children }) => (
       <link rel="icon" href="/bpm-guide/favicon.ico" />
     </Head>
     <Header />
-    <div className="d-flex">
+    <div className="my-flex">
       <Sidebar />
       <div
         as="main"
-        className="content-container flex-grow-1"
+        className="content-container"
         // className={`${inter.className} content-container flex-grow-1`}
       >
-        <ToastContainer />
         {children}
+        <ToastContainer />
       </div>
     </div>
     {/* <Container fluid>

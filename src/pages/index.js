@@ -1,4 +1,3 @@
-// pages/index.js
 import Layout from "@/components/layout";
 
 const Home = () => (

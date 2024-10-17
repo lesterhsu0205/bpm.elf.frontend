@@ -11,7 +11,7 @@ const Header = () => (
     className="header-custom"
   >
     <Container fluid className="p-0">
-      <Navbar.Brand as={Link} href="/" className="brand-custom">
+      <Navbar.Brand as={Link} href="/">
         BPM ELF
       </Navbar.Brand>
       {/* <Navbar.Toggle aria-controls="basic-navbar-nav" />

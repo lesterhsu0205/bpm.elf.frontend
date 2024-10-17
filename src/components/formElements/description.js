@@ -1,6 +1,11 @@
 import { Form, Button, Card, InputGroup } from "react-bootstrap";
 import { useFormContext } from "react-hook-form";
 import { Copy, FileEarmarkArrowUp, Trash } from "react-bootstrap-icons";
+import {
+  ArrowUpOnSquareIcon,
+  TrashIcon,
+  DocumentDuplicateIcon,
+} from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
 
 const Description = ({ label, idKey }) => {
@@ -37,25 +42,15 @@ const Description = ({ label, idKey }) => {
       <Card.Header className="d-flex justify-content-between align-items-center">
         {label}
         <div>
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            className="me-2"
-            onClick={clear}
-          >
-            <Trash />
+          <Button variant="outline-secondary" className="me-2" onClick={clear}>
+            <TrashIcon className="h-5 w-5" />
           </Button>
 
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            className="me-2"
-            onClick={copy}
-          >
-            <Copy />
+          <Button variant="outline-secondary" className="me-2" onClick={copy}>
+            <DocumentDuplicateIcon className="h-5 w-5" />
           </Button>
-          <Button variant="outline-secondary" size="sm" onClick={apply}>
-            <FileEarmarkArrowUp />
+          <Button variant="outline-secondary" onClick={apply}>
+            <ArrowUpOnSquareIcon className="h-5 w-5" />
           </Button>
         </div>
       </Card.Header>
