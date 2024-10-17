@@ -15,9 +15,10 @@ import {
 import fs from "fs";
 import path from "path";
 import { toast } from "react-toastify";
-import _ from "lodash"
+import _ from "lodash";
 
 import Layout from "@/components/layout";
+import JsonEditor from "@/components/jsonEditor";
 
 export async function getServerSideProps() {
   const publicDir = path.join(process.cwd(), "public");
@@ -34,15 +35,16 @@ export async function getServerSideProps() {
 }
 
 const Settings = ({ jsonFileNames }) => {
-  const JsonEditor = dynamic(
-    () => import("json-edit-react").then((mod) => mod.JsonEditor),
-    {
-      ssr: false,
-    }
-  );
+  // const JsonEditor = dynamic(
+  //   () => import("json-edit-react").then((mod) => mod.JsonEditor),
+  //   {
+  //     ssr: false,
+  //   }
+  // );
 
   const router = useRouter();
 
+  const [basePath, SetBasePath] = useState(null);
   const [clickEvt, SetClickEvt] = useState(0);
   const [focusFileName, setFocusFileName] = useState("onBoard.json");
 
@@ -54,22 +56,23 @@ const Settings = ({ jsonFileNames }) => {
     jsonDataRef.current = newData;
   };
 
-  const saveData = async() => {
+  const saveData = async () => {
     const newJsonData = { ...jsonDataRef.current };
     setJsonDataView(newJsonData);
 
-    const response = await fetch(`/bpm-guide/api/write-setting/${focusFileName}`, {
-      method: "POST",
-      headers:{
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(newJsonData)
-    })
+    const response = await fetch(
+      `${basePath}/api/write-setting/${focusFileName}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newJsonData),
+      }
+    );
 
-
-    const result = await response.json()
-    toast.info(result.message)
-    
+    const result = await response.json();
+    toast.info(result.message);
   };
 
   useEffect(() => {
@@ -80,14 +83,15 @@ const Settings = ({ jsonFileNames }) => {
     const fetchData = async () => {
       console.info(focusFileName);
       try {
-        const basePath = router.basePath;
-        const response = await fetch(`${basePath}/${focusFileName}`);
+        const response = await fetch(`${router.basePath}/${focusFileName}`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
 
         const resp = await response.json();
         jsonDataRef.current = resp;
+
+        SetBasePath(router.basePath);
         setJsonDataView({ ...resp });
       } catch (error) {
         toast.error("Fetch error:", error);
@@ -107,27 +111,40 @@ const Settings = ({ jsonFileNames }) => {
             </Col>
             <Col className="d-flex justify-content-end">
               <ButtonGroup>
-                <Button variant="secondary" className="bs-secondary" onClick={saveData}>
+                <Button
+                  variant="secondary"
+                  className="bs-secondary"
+                  onClick={saveData}
+                >
                   New
                 </Button>
-                <Button variant="secondary" className="bs-secondary" onClick={saveData}>
+                <Button
+                  variant="secondary"
+                  className="bs-secondary"
+                  onClick={saveData}
+                >
                   Update
                 </Button>
-                <Button variant="secondary" className="bs-secondary" onClick={saveData}>
+                <Button
+                  variant="secondary"
+                  className="bs-secondary"
+                  onClick={saveData}
+                >
                   Delete
                 </Button>
               </ButtonGroup>
             </Col>
           </Row>
           <Row className="mb-3">
-            <JsonEditor
+            <JsonEditor data={jsonDataRef.current} setData={setJsonRefData}/>
+            {/* <JsonEditor
               data={jsonDataRef.current}
               setData={setJsonRefData} // optional
               rootName=""
               collapse={3}
               showCollectionCount="when-closed"
               maxWidth="100%"
-            />
+            /> */}
           </Row>
         </Col>
         <Col className="col-4">

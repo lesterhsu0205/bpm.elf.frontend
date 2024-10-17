@@ -1,17 +1,16 @@
-import fs  from "fs";
+import fs from "fs";
 import path from "path";
 
 const Handler = (req, res) => {
   const { fileName } = req.query;
-  if (req.method === "POST") {
+  if (req.method === "DELETE") {
     try {
-      const data = req.body;
       const jsonDir = path.join(process.cwd(), "public");
       const filePath = path.join(jsonDir, `${fileName}`);
 
-      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+      fs.unlinkSync(filePath)
 
-      res.status(200).json({ message: "File written successfully" });
+      res.status(200).json({ message: "File delete successfully" });
     } catch (error) {
       res
         .status(500)
