@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Content from "@/components/content";
+import { toast } from "react-toastify";
 
 const DynamicPage = () => {
   const router = useRouter();
@@ -27,7 +28,7 @@ const DynamicPage = () => {
 
         setConfig(jsonData);
       } catch (error) {
-        console.error("Fetch error:", error);
+        toast.error("Fetch error:", error);
       }
     };
 

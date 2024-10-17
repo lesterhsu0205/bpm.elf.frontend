@@ -1,5 +1,5 @@
 {
-  "name": "菜鳥報到",
+  "name": "新人報到",
   "tickets": [
     {
       "title": "基本資料",
@@ -9,8 +9,14 @@
           "label": "處別",
           "key": "division",
           "options": [
-            { "value": "核心系統處", "text": "核心系統處" },
-            { "value": "業務系統處", "text": "業務系統處" }
+            {
+              "value": "核心系統處",
+              "text": "核心系統處"
+            },
+            {
+              "value": "業務系統處",
+              "text": "業務系統處"
+            }
           ]
         },
         {
@@ -18,21 +24,63 @@
           "label": "部門",
           "key": "department",
           "options": [
-            { "value": "系統整合應用部", "text": "系統整合應用部" },
-            { "value": "營運支援系統部", "text": "營運支援系統部" },
-            { "value": "台幣存匯系統部", "text": "台幣存匯系統部" },
-            { "value": "台幣共用系統部", "text": "台幣共用系統部" },
-            { "value": "支付系統部", "text": "支付系統部" },
-            { "value": "風險系統部", "text": "風險系統部" },
-            { "value": "台幣放款系統部", "text": "台幣放款系統部" },
-            { "value": "保險系統部", "text": "保險系統部" },
-            { "value": "外匯暨信託系統部", "text": "外匯暨信託系統部" },
-            { "value": "QA暨資訊營管部", "text": "QA暨資訊營管部" }
+            {
+              "value": "系統整合應用部",
+              "text": "系統整合應用部"
+            },
+            {
+              "value": "營運支援系統部",
+              "text": "營運支援系統部"
+            },
+            {
+              "value": "台幣存匯系統部",
+              "text": "台幣存匯系統部"
+            },
+            {
+              "value": "台幣共用系統部",
+              "text": "台幣共用系統部"
+            },
+            {
+              "value": "支付系統部",
+              "text": "支付系統部"
+            },
+            {
+              "value": "風險系統部",
+              "text": "風險系統部"
+            },
+            {
+              "value": "台幣放款系統部",
+              "text": "台幣放款系統部"
+            },
+            {
+              "value": "保險系統部",
+              "text": "保險系統部"
+            },
+            {
+              "value": "外匯暨信託系統部",
+              "text": "外匯暨信託系統部"
+            },
+            {
+              "value": "QA暨資訊營管部",
+              "text": "QA暨資訊營管部"
+            }
           ]
         },
-        { "type": "text", "label": "員工編號", "key": "staffId" },
-        { "type": "text", "label": "英文名", "key": "engName" },
-        { "type": "text", "label": "中文名", "key": "chiName" }
+        {
+          "type": "text",
+          "label": "員工編號",
+          "key": "staffId"
+        },
+        {
+          "type": "text",
+          "label": "英文名",
+          "key": "engName"
+        },
+        {
+          "type": "text",
+          "label": "中文名",
+          "key": "chiName"
+        }
       ]
     },
     {
@@ -43,8 +91,14 @@
           "label": "申請項目",
           "key": "device",
           "options": [
-            { "value": "螢幕", "text": "螢幕" },
-            { "value": "筆記型電腦", "text": "筆記型電腦" }
+            {
+              "value": "螢幕",
+              "text": "螢幕"
+            },
+            {
+              "value": "筆記型電腦",
+              "text": "筆記型電腦"
+            }
           ]
         },
         {
@@ -63,9 +117,18 @@
           "label": "申請安裝設備",
           "key": "apply_install_device",
           "options": [
-            { "value": "筆記型電腦", "text": "筆記型電腦" },
-            { "value": "桌上型電腦", "text": "桌上型電腦" },
-            { "value": "監控室電腦", "text": "監控室電腦" }
+            {
+              "value": "筆記型電腦",
+              "text": "筆記型電腦"
+            },
+            {
+              "value": "桌上型電腦",
+              "text": "桌上型電腦"
+            },
+            {
+              "value": "監控室電腦",
+              "text": "監控室電腦"
+            }
           ]
         },
         {
@@ -73,7 +136,11 @@
           "label": "申請原因",
           "key": "apply_install_reason"
         },
-        { "type": "textarea", "label": "安裝軟體清單", "key": "softwareList" },
+        {
+          "type": "textarea",
+          "label": "安裝軟體清單",
+          "key": "softwareList"
+        },
         {
           "type": "description",
           "label": "需求說明",
@@ -90,10 +157,22 @@
           "label": "環境",
           "key": "env",
           "options": [
-            { "value": "dev", "text": "dev" },
-            { "value": "stg", "text": "stg" },
-            { "value": "uat", "text": "uat" },
-            { "value": "prd", "text": "prd" }
+            {
+              "value": "dev",
+              "text": "dev"
+            },
+            {
+              "value": "stg",
+              "text": "stg"
+            },
+            {
+              "value": "uat",
+              "text": "uat"
+            },
+            {
+              "value": "prd",
+              "text": "prd"
+            }
           ]
         },
         {
@@ -101,9 +180,18 @@
           "label": "需求類型",
           "key": "require_type",
           "options": [
-            { "value": "add", "text": "新增" },
-            { "value": "update", "text": "修改" },
-            { "value": "delete", "text": "刪除" }
+            {
+              "value": "add",
+              "text": "新增"
+            },
+            {
+              "value": "update",
+              "text": "修改"
+            },
+            {
+              "value": "delete",
+              "text": "刪除"
+            }
           ]
         },
         {

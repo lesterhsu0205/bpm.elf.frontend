@@ -14,6 +14,8 @@ import {
 } from "react-bootstrap";
 import fs from "fs";
 import path from "path";
+import { toast } from "react-toastify";
+import _ from "lodash"
 
 import Layout from "@/components/layout";
 
@@ -46,17 +48,28 @@ const Settings = ({ jsonFileNames }) => {
 
   const jsonDataRef = useRef([{}]);
 
-  const [jsonData, setJsonData] = useState(null);
+  const [jsonDataView, setJsonDataView] = useState(null);
 
   const setJsonRefData = (newData) => {
     jsonDataRef.current = newData;
   };
 
-  const saveData = () => {
+  const saveData = async() => {
     const newJsonData = { ...jsonDataRef.current };
-    setJsonData(newJsonData);
+    setJsonDataView(newJsonData);
 
-    // fs.writeFileSync(path.join(publicDir, focusFileName), newJsonData, "utf-8");
+    const response = await fetch(`/bpm-guide/api/write-setting/${focusFileName}`, {
+      method: "POST",
+      headers:{
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newJsonData)
+    })
+
+
+    const result = await response.json()
+    toast.info(result.message)
+    
   };
 
   useEffect(() => {
@@ -75,9 +88,9 @@ const Settings = ({ jsonFileNames }) => {
 
         const resp = await response.json();
         jsonDataRef.current = resp;
-        setJsonData({ ...resp });
+        setJsonDataView({ ...resp });
       } catch (error) {
-        console.error("Fetch error:", error);
+        toast.error("Fetch error:", error);
       }
     };
 
@@ -135,7 +148,7 @@ const Settings = ({ jsonFileNames }) => {
           ))}
         </Col>
         {/* <Col>
-          <pre>{JSON.stringify(jsonData, null, 2)}</pre>
+          <pre>{JSON.stringify(jsonDataView, null, 2)}</pre>
         </Col> */}
       </Row>
     </Layout>

@@ -33,6 +33,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import _ from "lodash";
+import { toast } from "react-toastify";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(0);
@@ -46,7 +47,7 @@ const Sidebar = () => {
   const router = useRouter();
 
   useEffect(() => {
-    console.info("shit");
+    console.info("sidebar useEffect");
     if (!router.isReady) {
       return;
     }
@@ -63,7 +64,7 @@ const Sidebar = () => {
 
         setData(result);
       } catch (error) {
-        console.error("Fetch error:", error);
+        toast.error("Fetch error:", error);
       }
     };
 
