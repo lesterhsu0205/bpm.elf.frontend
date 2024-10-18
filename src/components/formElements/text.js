@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import { useFormContext } from "react-hook-form";
 
-const Text = ({ label, idKey }) => {
+const Text = ({ label, idKey, readOnly, placeholder, disabled, suffix }) => {
   const {
     register,
     reset,
@@ -22,7 +22,14 @@ const Text = ({ label, idKey }) => {
   return (
     <InputGroup as={Col}>
       <InputGroup.Text>{label}</InputGroup.Text>
-      <Form.Control type="text" {...register(idKey)} />
+      <Form.Control
+        type="text"
+        placeholder={placeholder}
+        {...register(idKey)}
+        readOnly={readOnly}
+        disabled={disabled}
+      />
+      {suffix && <InputGroup.Text>{suffix}</InputGroup.Text>}
     </InputGroup>
   );
 };

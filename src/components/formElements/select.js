@@ -16,7 +16,7 @@ const Select = ({ label, idKey, options }) => {
         {options &&
           options.length > 0 &&
           options.map((option, index) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.text} value={option.text}>
               {option.text}
             </option>
           ))}

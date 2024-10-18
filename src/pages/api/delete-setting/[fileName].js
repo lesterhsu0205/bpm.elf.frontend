@@ -14,7 +14,7 @@ const Handler = (req, res) => {
     } catch (error) {
       res
         .status(500)
-        .json({ message: "Error writing file", error: error.message });
+        .json({ message: "Error delete file", error: error.message });
     }
   } else {
     res.status(405).json({ message: "Method Not Allowed" });

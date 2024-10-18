@@ -16,13 +16,13 @@ const Checkbox = ({ label, idKey, options }) => {
         options.length > 0 &&
         options.map((option, index) => (
           <Form.Check
-            key={option.value}
+            key={option.text}
             inline
             type="checkbox"
-            id={`${idKey}_${option.value}`}
+            id={`${idKey}_${option.text}`}
             name={idKey}
             label={option.text}
-            value={option.value}
+            value={option.text}
             {...register(idKey)}
           />
         ))}

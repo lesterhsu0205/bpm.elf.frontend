@@ -55,6 +55,12 @@ body {
 @tailwind utilities;
 
 @layer utilities {
+  /* TODO: workaround */
+  a.workaround {
+    color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+    text-decoration: underline !important;
+  }
+
   /* 避免 bs button style 被蓋 */
   button.bs-secondary {
     background-color: var(--bs-secondary);
@@ -62,5 +68,21 @@ body {
 
   button.bs-primary {
     background-color: var(--bs-primary);
+  }
+
+  button.bs-danger {
+    background-color: var(--bs-danger);
+  }
+
+  button.bs-success {
+    background-color: var(--bs-success);
+  }
+
+  button.bs-primary {
+    background-color: var(--bs-primary);
+  }
+
+  button.bs-info {
+    background-color: var(--bs-info);
   }
 }
