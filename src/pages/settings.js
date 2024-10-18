@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import dynamic from "next/dynamic";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import {
   Form,
@@ -35,13 +34,6 @@ export async function getServerSideProps() {
 }
 
 const Settings = ({ jsonFileNames }) => {
-  // const JsonEditor = dynamic(
-  //   () => import("json-edit-react").then((mod) => mod.JsonEditor),
-  //   {
-  //     ssr: false,
-  //   }
-  // );
-
   const router = useRouter();
 
   const [basePath, SetBasePath] = useState(null);
@@ -100,7 +92,7 @@ const Settings = ({ jsonFileNames }) => {
 
     fetchData();
   }, [router.isReady, router.basePath, focusFileName, clickEvt]);
-  // In your React component:
+
   return (
     <Layout>
       <Row className="mb-3">
@@ -136,15 +128,7 @@ const Settings = ({ jsonFileNames }) => {
             </Col>
           </Row>
           <Row className="mb-3">
-            <JsonEditor data={jsonDataRef.current} setData={setJsonRefData}/>
-            {/* <JsonEditor
-              data={jsonDataRef.current}
-              setData={setJsonRefData} // optional
-              rootName=""
-              collapse={3}
-              showCollectionCount="when-closed"
-              maxWidth="100%"
-            /> */}
+            <JsonEditor data={jsonDataRef.current} setData={setJsonRefData} />
           </Row>
         </Col>
         <Col className="col-4">
