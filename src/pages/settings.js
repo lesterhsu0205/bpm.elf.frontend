@@ -27,6 +27,7 @@ import Text from "@/components/formElements/text";
 // }
 
 const Settings = () => {
+  const initJsonData = { name: null, tickets: [] }
   const router = useRouter();
 
   const [basePath, SetBasePath] = useState(null);
@@ -34,7 +35,7 @@ const Settings = () => {
 
   const [jsonFiles, setJsonFiles] = useState([]);
   const [focusFileName, setFocusFileName] = useState("onBoard.json");
-  const jsonDataRef = useRef([{}]);
+  const jsonDataRef = useRef(initJsonData);
   const [jsonDataView, setJsonDataView] = useState(null);
   const [newDataMode, setNewDataMode] = useState(false);
 
@@ -76,7 +77,7 @@ const Settings = () => {
   const newData = () => {
     setNewDataMode(true);
     setFocusFileName(null);
-    setJsonRefData({});
+    setJsonRefData(initJsonData);
     refreshJsonView();
   };
 

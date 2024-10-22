@@ -42,7 +42,7 @@ const Sidebar = () => {
     setOpen(open === value ? 0 : value);
   };
 
-  const [data, setData] = useState([,]);
+  const [data, setData] = useState([]);
 
   const router = useRouter();
 

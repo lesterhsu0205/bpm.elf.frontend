@@ -33,7 +33,7 @@ body {
   border: none;
   border-radius: 0;
   box-shadow: none;
-  resize: none;
+  /* resize: none; */
   margin: 0;
   padding: 20px;
   width: 100%;

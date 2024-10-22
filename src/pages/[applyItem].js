@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -9,17 +9,17 @@ const DynamicPage = () => {
   const router = useRouter();
   const [config, setConfig] = useState(null);
   useEffect(() => {
-
     if (!router.isReady || !router.query.applyItem) {
-      return
+      return;
     }
 
-    // TODO: 或許可改成每分鐘重新 fetch 一次
     const fetchData = async () => {
       try {
         const { applyItem } = router.query;
         const basePath = router.basePath;
-        const response = await fetch(`${basePath}/${applyItem}.json`);
+        const response = await fetch(
+          `${basePath}/api/read-setting/${applyItem}.json`
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
