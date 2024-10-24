@@ -23,8 +23,8 @@ const Description = ({ label, idKey }) => {
       .then(() => {
         toast.success("Text copied to clipboard!");
       })
-      .catch((err) => {
-        toast.error("Failed to copy text: ", err);
+      .catch((error) => {
+        toast.error("Failed to copy text: ", error.message);
       });
   };
 

@@ -28,7 +28,7 @@ const DynamicPage = () => {
 
         setConfig(jsonData);
       } catch (error) {
-        toast.error("Fetch error:", error);
+        toast.error("Fetch error:", error.message);
       }
     };
 

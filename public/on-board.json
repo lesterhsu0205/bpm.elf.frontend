@@ -77,7 +77,7 @@
         {
           "type": "select",
           "label": "申請項目",
-          "key": "device",
+          "key": "apply_device",
           "options": [
             {
               "text": "螢幕"
@@ -91,7 +91,7 @@
           "type": "description",
           "label": "需求說明",
           "key": "apply_device_description",
-          "template": "[需求說明]\n${division} ${department} 新進同仁 ${staffId} ${engName} ${chiName} 新人到職申請 ${device}\n\n[執行單位]\n問管暨IDC作業管理部"
+          "template": "[需求說明]\n${division} ${department} 新進同仁 ${staffId} ${engName} ${chiName} 新人到職申請 ${apply_device}\n\n[執行單位]\n問管暨IDC作業管理部"
         }
       ]
     },
@@ -141,16 +141,16 @@
           "key": "env",
           "options": [
             {
-              "text": "dev"
+              "text": "DEV"
             },
             {
-              "text": "stg"
+              "text": "STG"
             },
             {
-              "text": "uat"
+              "text": "UAT"
             },
             {
-              "text": "prd"
+              "text": "PRD"
             }
           ]
         },

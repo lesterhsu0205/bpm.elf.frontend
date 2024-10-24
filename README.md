@@ -39,12 +39,41 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-## Build & deploy to jboss server
+## Build & deploy to node process
 
-``` shell
+1. build project
+
+   ```shell
+   npm run build
+   ```
+
+2. zip project
+
+3. ssh to deploy server tvdev-ans-lab01...
+
+4. backup last build
+
+   ```shell
+   sudo mv ~/lester/com.line.bank.bxi.bpm.guide.tar ~/lester/com.line.bank.bxi.bpm.guide.tar.[date]
+   rm -rf ~/lester/com.line.bank.bxi.bpm.guide
+   ```
+
+5. scp project to deploy server
+
+6. unzip
+
+7. restart
+
+   ```shell
+   sudo systemctl restart line.node.devbpmelf.service
+   ```
+
+## Build & deploy to jboss server (CSR mode only)
+
+```shell
+npm run build
 cd out
 jar -cvf bpm-guide.war *
-
 
 ssh tvdev-ans-lab01...
 sudo mv /tmp/bpm-guide.war /opt/apps/bpmguide/

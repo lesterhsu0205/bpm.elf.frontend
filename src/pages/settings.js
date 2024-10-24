@@ -34,7 +34,7 @@ const Settings = () => {
   const [clickEvt, SetClickEvt] = useState(0);
 
   const [jsonFiles, setJsonFiles] = useState([]);
-  const [focusFileName, setFocusFileName] = useState("onBoard.json");
+  const [focusFileName, setFocusFileName] = useState("on-board.json");
   const jsonDataRef = useRef(initJsonData);
   const [jsonDataView, setJsonDataView] = useState(null);
   const [newDataMode, setNewDataMode] = useState(false);
@@ -70,7 +70,6 @@ const Settings = () => {
 
   const setJsonRefData = (newData) => {
     jsonDataRef.current = newData;
-    console.info(jsonDataRef);
     refreshJsonView();
   };
 
@@ -98,7 +97,7 @@ const Settings = () => {
 
     const result = await response.json();
 
-    exitNewData({ targetFile: "onBoard.json" });
+    exitNewData({ targetFile: "on-board.json" });
 
     toast.success(result.message);
   };
@@ -135,7 +134,6 @@ const Settings = () => {
         return;
       }
 
-      console.info(focusFileName);
       try {
         // const response = await fetch(`${router.basePath}/${focusFileName}`);
         const response = await fetch(`${router.basePath}/api/read-settings`);
@@ -153,7 +151,7 @@ const Settings = () => {
         setJsonFiles(resp);
         setJsonDataView({ ...focusFile.content });
       } catch (error) {
-        toast.error("Fetch error:", error);
+        toast.error("Fetch error:", error.message);
       }
     };
 

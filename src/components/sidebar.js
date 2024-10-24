@@ -64,7 +64,7 @@ const Sidebar = () => {
 
         setData(result);
       } catch (error) {
-        toast.error("Fetch error:", error);
+        toast.error("Fetch error:", error.message);
       }
     };
 
@@ -79,9 +79,32 @@ const Sidebar = () => {
             <ListItemPrefix>
               <HomeIcon className="h-5 w-5" />
             </ListItemPrefix>
-            Home
+            首頁
           </ListItem>
         </Link>
+        {data.map((setting, index) => {
+          if (setting.content.hidden && setting.content.hidden === true) {
+            return (
+              <React.Fragment key={`${setting.file}_${index}`}></React.Fragment>
+            );
+          }
+
+          return (
+            <Link
+              key={`${setting.file}_${index}`}
+              href={`/${_.replace(setting.file, ".json", "")}`}
+            >
+              {/* 透過傳參數去配對 json file 會顯示在 url 上，所以 json 命名應與 path name 一樣，如 /test -> test.json */}
+              {/* href={{ pathname: "/test", param: { gg: "onboard" } }} */}
+              <ListItem>
+                <ListItemPrefix>
+                  <TicketIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                {setting.content.name}
+              </ListItem>
+            </Link>
+          );
+        })}
         <Accordion
           open={open === 1}
           icon={
@@ -102,51 +125,36 @@ const Sidebar = () => {
                 <RectangleStackIcon className="h-5 w-5" />
               </ListItemPrefix>
               <Typography color="blue-gray" className="mr-auto font-normal">
-                Compose ticket
+                其他工具
               </Typography>
             </AccordionHeader>
           </ListItem>
           <AccordionBody className="py-0 px-3">
             <List className="p-0">
-              <ListItem>
-                {/* <ListItemPrefix>
+              <Link href="/maintain-mail">
+                <ListItem>
+                  {/* <ListItemPrefix>
                   <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                 </ListItemPrefix> */}
-                <ListItemPrefix>
-                  <ArrowTurnDownRightIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                ticket1
-              </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ArrowTurnDownRightIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                ticket2
-              </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ArrowTurnDownRightIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                ticket3
-              </ListItem>
+                  <ListItemPrefix>
+                    <ArrowTurnDownRightIcon className="h-5 w-5" />
+                  </ListItemPrefix>
+                  上版維運信
+                </ListItem>
+              </Link>
+
+              <Link href="/apply-interface-approve">
+                <ListItem>
+                  <ListItemPrefix>
+                    <ArrowTurnDownRightIcon className="h-5 w-5" />
+                  </ListItemPrefix>
+                  Release單簽核
+                </ListItem>
+              </Link>
             </List>
           </AccordionBody>
         </Accordion>
-        {data.map((setting, index) => (
-          <Link
-            key={`${setting.file}_${index}`}
-            href={`/${_.replace(setting.file, ".json", "")}`}
-          >
-            {/* 透過傳參數去配對 json file 會顯示在 url 上，所以 json 命名應與 path name 一樣，如 /test -> test.json */}
-            {/* href={{ pathname: "/test", param: { gg: "onboard" } }} */}
-            <ListItem>
-              <ListItemPrefix>
-                <TicketIcon className="h-5 w-5" />
-              </ListItemPrefix>
-              {setting.content.name}
-            </ListItem>
-          </Link>
-        ))}
+
         {/* <ListItem>
           <ListItemPrefix>
             <InboxIcon className="h-5 w-5" />
@@ -167,7 +175,7 @@ const Sidebar = () => {
             <ListItemPrefix>
               <PencilSquareIcon className="h-5 w-5" />
             </ListItemPrefix>
-            Settings
+            設定
           </ListItem>
         </Link>
       </List>

@@ -20,7 +20,7 @@ const JsonEditor = ({ data, setData }) => {
       data={data}
       setData={setData} // optional
       rootName=""
-      collapse={3}
+      // collapse={3}
       showCollectionCount="when-closed"
       maxWidth="100%"
     />

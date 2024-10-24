@@ -33,10 +33,6 @@ function Content({ config }) {
   watch();
 
   const submit = (data) => {
-    console.info(data.engName);
-    console.info(data.department);
-    console.info(data.device);
-    console.info(data.apply_device_description);
 
     try {
       for (let i = 0; i < config.tickets.length; i++) {
