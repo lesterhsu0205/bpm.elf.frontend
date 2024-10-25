@@ -55,7 +55,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
    ```shell
    sudo mv ~/lester/com.line.bank.bxi.bpm.guide.tar ~/lester/com.line.bank.bxi.bpm.guide.tar.[date]
-   rm -rf ~/lester/com.line.bank.bxi.bpm.guide
+   sudo rm -rf ~/lester/com.line.bank.bxi.bpm.guide
    ```
 
 5. scp project to deploy server

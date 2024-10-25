@@ -1,6 +1,9 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import { Form, Button, Card, InputGroup } from "react-bootstrap";
 import { useFormContext } from "react-hook-form";
-import { Copy, FileEarmarkArrowUp, Trash } from "react-bootstrap-icons";
+import ClipboardJS from "clipboard";
 import {
   ArrowUpOnSquareIcon,
   TrashIcon,
@@ -12,21 +15,35 @@ const Description = ({ label, idKey }) => {
   const {
     register,
     reset,
-    getValues,
+    watch,
     formState: { errors },
   } = useFormContext({ mode: "all" });
 
-  const copy = () => {
-    const textareaContent = getValues(idKey);
-    navigator.clipboard
-      .writeText(textareaContent)
-      .then(() => {
-        toast.success("Text copied to clipboard!");
-      })
-      .catch((error) => {
-        toast.error("Failed to copy text: ", error.message);
+  const copyBtnRef = useRef(null);
+  const watchedCopyText = watch(idKey);
+
+  useEffect(() => {
+    console.info("useEffect!!!!");
+
+    if (watchedCopyText) {
+      const clipboard = new ClipboardJS(copyBtnRef.current, {
+        text: () => watchedCopyText,
       });
-  };
+
+      clipboard.on("success", () => {
+        toast.success("Text copied to clipboard!");
+      });
+
+      clipboard.on("error", (e) => {
+        console.error("Failed to copy text: ", e);
+      });
+
+      return () => {
+        console.info("clipboard.destroy()");
+        clipboard.destroy();
+      };
+    }
+  }, [watchedCopyText]);
 
   const apply = () => {
     toast.success("已完成開單，單號: 2024-07-19 ITREQ-022");
@@ -46,7 +63,7 @@ const Description = ({ label, idKey }) => {
             <TrashIcon className="h-5 w-5" />
           </Button>
 
-          <Button variant="outline-secondary" className="me-2" onClick={copy}>
+          <Button variant="outline-secondary" className="me-2" ref={copyBtnRef}>
             <DocumentDuplicateIcon className="h-5 w-5" />
           </Button>
           <Button variant="outline-secondary" onClick={apply}>
