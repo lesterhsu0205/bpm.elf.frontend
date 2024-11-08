@@ -26,7 +26,7 @@ import {
   HomeIcon,
   InboxIcon,
   PowerIcon,
-  WrenchScrewdriverIcon
+  WrenchScrewdriverIcon,
 } from "@heroicons/react/24/solid";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -34,6 +34,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import _ from "lodash";
 import { toast } from "react-toastify";
+import { useSharedContext } from "@/sharedContext";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(0);
@@ -45,6 +46,8 @@ const Sidebar = () => {
   const [data, setData] = useState([]);
 
   const router = useRouter();
+
+  const { sharedValue } = useSharedContext();
 
   useEffect(() => {
     console.info("sidebar useEffect");
@@ -69,7 +72,7 @@ const Sidebar = () => {
     };
 
     fetchData();
-  }, [router.isReady, router.basePath]);
+  }, [router.isReady, router.basePath, sharedValue]);
 
   return (
     <Card className="shadow-xl h-full overflow-y-auto">

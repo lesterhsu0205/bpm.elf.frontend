@@ -10,6 +10,7 @@ import _ from "lodash";
 import Layout from "@/components/layout";
 import JsonEditor from "@/components/jsonEditor";
 import Text from "@/components/formElements/text";
+import { useSharedContext } from "@/sharedContext";
 
 // 取得所有 ${applyItem}.json
 // export async function getServerSideProps() {
@@ -38,6 +39,8 @@ const Settings = () => {
   const jsonDataRef = useRef(initJsonData);
   const [jsonDataView, setJsonDataView] = useState(null);
   const [newDataMode, setNewDataMode] = useState(false);
+
+  const { setSharedValue } = useSharedContext();
 
   const {
     register,
@@ -68,6 +71,10 @@ const Settings = () => {
     setJsonDataView(newJsonData);
   };
 
+  const refreshSidebar = () => {
+    setSharedValue((prev) => !prev);
+  };
+
   const setJsonRefData = (newData) => {
     jsonDataRef.current = newData;
     refreshJsonView();
@@ -94,6 +101,8 @@ const Settings = () => {
     });
     // just trigger useEffect
     setFocusFileName(null);
+    
+    refreshSidebar();
     toast.success(result.message);
   };
 
@@ -123,6 +132,8 @@ const Settings = () => {
       setFocusFileName(fileName);
     }
     // refreshJsonView();
+
+    refreshSidebar();
     toast.success(result.message);
   };
 
