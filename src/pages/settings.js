@@ -27,14 +27,14 @@ import Text from "@/components/formElements/text";
 // }
 
 const Settings = () => {
-  const initJsonData = { name: null, tickets: [] }
+  const initJsonData = { name: null, tickets: [] };
   const router = useRouter();
 
   const [basePath, SetBasePath] = useState(null);
   const [clickEvt, SetClickEvt] = useState(0);
 
   const [jsonFiles, setJsonFiles] = useState([]);
-  const [focusFileName, setFocusFileName] = useState("on-board.json");
+  const [focusFileName, setFocusFileName] = useState(null);
   const jsonDataRef = useRef(initJsonData);
   const [jsonDataView, setJsonDataView] = useState(null);
   const [newDataMode, setNewDataMode] = useState(false);
@@ -57,7 +57,7 @@ const Settings = () => {
 
   const submit = (data) => {
     try {
-      saveData({ newFileName: `${data.focusFileName}.json` });
+      saveData({ newFileName: data.focusFileName });
     } catch (Error) {
       toast.warn(Error.message);
     }
@@ -80,14 +80,7 @@ const Settings = () => {
     refreshJsonView();
   };
 
-  const exitNewData = ({ targetFile }) => {
-    setNewDataMode(false);
-    setFocusFileName(targetFile);
-  };
-
   const deleteData = async () => {
-    refreshJsonView();
-
     const response = await fetch(
       `${basePath}/api/delete-setting/${focusFileName}`,
       {
@@ -96,16 +89,21 @@ const Settings = () => {
     );
 
     const result = await response.json();
-
-    exitNewData({ targetFile: "on-board.json" });
-
+    reset({
+      focusFileName: null,
+    });
+    // just trigger useEffect
+    setFocusFileName(null);
     toast.success(result.message);
   };
 
   const saveData = async ({ newFileName }) => {
-    refreshJsonView();
+    if (!(focusFileName || newFileName)) {
+      toast.warn("檔名不得為空");
+      return;
+    }
 
-    const fileName = focusFileName || newFileName;
+    const fileName = focusFileName || `${newFileName}.json`;
 
     const response = await fetch(`${basePath}/api/write-setting/${fileName}`, {
       method: "POST",
@@ -118,22 +116,22 @@ const Settings = () => {
     const result = await response.json();
 
     if (newDataMode === true) {
-      exitNewData({ targetFile: fileName });
+      setNewDataMode(false);
+      reset({
+        focusFileName: null,
+      });
+      setFocusFileName(fileName);
     }
-
+    // refreshJsonView();
     toast.success(result.message);
   };
 
   useEffect(() => {
-    if (!router.isReady) {
+    if (!router.isReady || newDataMode === true) {
       return;
     }
 
     const fetchData = async () => {
-      if (focusFileName === null) {
-        return;
-      }
-
       try {
         // const response = await fetch(`${router.basePath}/${focusFileName}`);
         const response = await fetch(`${router.basePath}/api/read-settings`);
@@ -143,20 +141,26 @@ const Settings = () => {
 
         const resp = await response.json();
 
-        const focusFile = resp.find((file) => file.file === focusFileName);
+        const focusFile = focusFileName
+          ? resp.find((file) => file.file === focusFileName)
+          : resp[0];
 
         jsonDataRef.current = focusFile.content;
+
+        if (!focusFileName) {
+          setFocusFileName(focusFile.file);
+        }
 
         SetBasePath(router.basePath);
         setJsonFiles(resp);
         setJsonDataView({ ...focusFile.content });
       } catch (error) {
-        toast.error("Fetch error:", error.message);
+        toast.error(`Fetch error: ${error.message}`);
       }
     };
 
     fetchData();
-  }, [router.isReady, router.basePath, focusFileName, clickEvt]);
+  }, [router.isReady, router.basePath, focusFileName, newDataMode]);
 
   return (
     <Layout>
@@ -211,9 +215,7 @@ const Settings = () => {
                     <Button
                       variant="secondary"
                       className="bs-secondary"
-                      onClick={() =>
-                        exitNewData({ targetFile: "onBoard.json" })
-                      }
+                      onClick={() => setNewDataMode(false)}
                     >
                       Cancel
                     </Button>

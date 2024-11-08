@@ -11,6 +11,9 @@ const nextConfig = {
   // 與 getServerSideProps 衝突
   // output: "export", 
   basePath: "/bpm-guide",
+  // publicRuntimeConfig:{
+  //   basePath: "/bpm-guide",
+  // }
 };
 
 export default nextConfig;

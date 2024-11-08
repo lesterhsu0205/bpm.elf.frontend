@@ -26,9 +26,9 @@ import {
   HomeIcon,
   InboxIcon,
   PowerIcon,
+  WrenchScrewdriverIcon
 } from "@heroicons/react/24/solid";
-import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
-import { Nav } from "react-bootstrap";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -64,7 +64,7 @@ const Sidebar = () => {
 
         setData(result);
       } catch (error) {
-        toast.error("Fetch error:", error.message);
+        toast.error(`Fetch error: ${error.message}`);
       }
     };
 
@@ -111,7 +111,7 @@ const Sidebar = () => {
             <ChevronDownIcon
               strokeWidth={2.5}
               className={`mx-auto h-4 w-4 transition-transform ${
-                open === 1 ? "rotate-180" : ""
+                open === 1 ? "" : "rotate-90"
               }`}
             />
           }
@@ -122,7 +122,7 @@ const Sidebar = () => {
               className="border-b-0 p-3"
             >
               <ListItemPrefix>
-                <RectangleStackIcon className="h-5 w-5" />
+                <WrenchScrewdriverIcon className="h-5 w-5" />
               </ListItemPrefix>
               <Typography color="blue-gray" className="mr-auto font-normal">
                 其他工具
@@ -143,7 +143,7 @@ const Sidebar = () => {
                 </ListItem>
               </Link>
 
-              <Link href="/apply-interface-approve">
+              <Link href="/apply-release-approve">
                 <ListItem>
                   <ListItemPrefix>
                     <ArrowTurnDownRightIcon className="h-5 w-5" />
@@ -180,19 +180,6 @@ const Sidebar = () => {
         </Link>
       </List>
     </Card>
-
-    // <Nav className="sidebar bg-light flex-column p-3">
-
-    //   {data.map((setting, index) => (
-    //     <Nav.Item key={`${setting.file}_${index}`}>
-    //       <Nav.Link as={Link} href={`/${_.replace(setting.file, ".json", "")}`}>
-    //         {/* 透過傳參數去配對 json file 會顯示在 url 上，所以 json 命名應與 path name 一樣，如 /test -> test.json */}
-    //         {/* href={{ pathname: "/test", param: { gg: "onboard" } }} */}
-    //         {setting.content.name}
-    //       </Nav.Link>
-    //     </Nav.Item>
-    //   ))}
-    // </Nav>
   );
 };
 
