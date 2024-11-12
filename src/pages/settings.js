@@ -101,7 +101,7 @@ const Settings = () => {
     });
     // just trigger useEffect
     setFocusFileName(null);
-    
+
     refreshSidebar();
     toast.success(result.message);
   };
@@ -252,7 +252,7 @@ const Settings = () => {
                   SetClickEvt(clickEvt + 1);
                 }}
               >
-                {file.file}
+                {file.content.name}
               </a>
             </li>
           ))}

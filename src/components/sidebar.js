@@ -26,7 +26,6 @@ import {
   HomeIcon,
   InboxIcon,
   PowerIcon,
-  WrenchScrewdriverIcon,
 } from "@heroicons/react/24/solid";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -37,13 +36,16 @@ import { toast } from "react-toastify";
 import { useSharedContext } from "@/sharedContext";
 
 const Sidebar = () => {
-  const [open, setOpen] = useState(0);
-
-  const handleOpen = (value) => {
-    setOpen(open === value ? 0 : value);
-  };
-
   const [data, setData] = useState([]);
+  const [accordionState, setAccordionState] = useState([]);
+
+  const toggleAccordion = (index) => {
+    setAccordionState((preState) => {
+      const newState = [...preState];
+      newState[index] = !newState[index];
+      return newState;
+    });
+  };
 
   const router = useRouter();
 
@@ -66,6 +68,7 @@ const Sidebar = () => {
         const result = await response.json();
 
         setData(result);
+        setAccordionState(new Array(result.length).fill(false));
       } catch (error) {
         toast.error(`Fetch error: ${error.message}`);
       }
@@ -85,78 +88,93 @@ const Sidebar = () => {
             首頁
           </ListItem>
         </Link>
-        {data.map((setting, index) => {
-          if (setting.content.hidden && setting.content.hidden === true) {
-            return (
-              <React.Fragment key={`${setting.file}_${index}`}></React.Fragment>
-            );
-          }
 
-          return (
-            <Link
-              key={`${setting.file}_${index}`}
-              href={`/${_.replace(setting.file, ".json", "")}`}
-            >
-              {/* 透過傳參數去配對 json file 會顯示在 url 上，所以 json 命名應與 path name 一樣，如 /test -> test.json */}
-              {/* href={{ pathname: "/test", param: { gg: "onboard" } }} */}
-              <ListItem>
-                <ListItemPrefix>
-                  <TicketIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                {setting.content.name}
-              </ListItem>
-            </Link>
-          );
-        })}
-        <Accordion
-          open={open === 1}
-          icon={
-            <ChevronDownIcon
-              strokeWidth={2.5}
-              className={`mx-auto h-4 w-4 transition-transform ${
-                open === 1 ? "" : "rotate-90"
-              }`}
-            />
-          }
-        >
-          <ListItem className="p-0" selected={open === 1}>
-            <AccordionHeader
-              onClick={() => handleOpen(1)}
-              className="border-b-0 p-3"
-            >
-              <ListItemPrefix>
-                <WrenchScrewdriverIcon className="h-5 w-5" />
-              </ListItemPrefix>
-              <Typography color="blue-gray" className="mr-auto font-normal">
-                其他工具
-              </Typography>
-            </AccordionHeader>
-          </ListItem>
-          <AccordionBody className="py-0 px-3">
-            <List className="p-0">
-              <Link href="/maintain-mail">
+        {data.map((setting, index) => {
+          if (setting.content.tickets.length < 2) {
+            return (
+              <Link
+                key={`${setting.file}_${index}`}
+                href={`/${_.replace(setting.file, ".json", "")}`}
+              >
+                {/* 透過傳參數去配對 json file 會顯示在 url 上，所以 json 命名應與 path name 一樣，如 /test -> test.json */}
+                {/* href={{ pathname: "/test", param: { gg: "onboard" } }} */}
                 <ListItem>
-                  {/* <ListItemPrefix>
+                  <ListItemPrefix>
+                    <TicketIcon className="h-5 w-5" />
+                  </ListItemPrefix>
+                  {setting.content.name}
+                </ListItem>
+              </Link>
+            );
+          } else {
+            return (
+              <Accordion
+                key={`${setting.file}_${index}`}
+                open={accordionState[index]}
+                icon={
+                  <ChevronDownIcon
+                    strokeWidth={2.5}
+                    className={`mx-auto h-4 w-4 transition-transform ${
+                      accordionState[index] ? "" : "rotate-90"
+                    }`}
+                  />
+                }
+              >
+                <Link href={`/${_.replace(setting.file, ".json", "")}`}>
+                  <ListItem className="p-0" selected={accordionState[index]}>
+                    <AccordionHeader
+                      onClick={() => toggleAccordion(index)}
+                      className="border-b-0 p-3"
+                    >
+                      <ListItemPrefix>
+                        <TicketIcon className="h-5 w-5" />
+                      </ListItemPrefix>
+                      <Typography
+                        color="blue-gray"
+                        className="mr-auto font-normal"
+                      >
+                        {setting.content.name}
+                      </Typography>
+                    </AccordionHeader>
+                  </ListItem>
+                </Link>
+
+                <AccordionBody className="py-0 px-3">
+                  <List className="p-0">
+                    {setting.content.tickets.map((ticket, idx) => {
+                      // FIXME: 識別不要用"基本資料"
+                      if (ticket.title === "基本資料") {
+                        return (
+                          <React.Fragment
+                            key={`${ticket.title}_${idx}`}
+                          ></React.Fragment>
+                        );
+                      }
+                      return (
+                        <Link
+                          href={`/${_.replace(setting.file, ".json", "")}_${
+                            ticket.title
+                          }`}
+                          key={`${ticket.title}_${idx}`}
+                        >
+                          <ListItem>
+                            {/* <ListItemPrefix>
                   <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                 </ListItemPrefix> */}
-                  <ListItemPrefix>
-                    <ArrowTurnDownRightIcon className="h-5 w-5" />
-                  </ListItemPrefix>
-                  上版維運信
-                </ListItem>
-              </Link>
-
-              <Link href="/apply-release-approve">
-                <ListItem>
-                  <ListItemPrefix>
-                    <ArrowTurnDownRightIcon className="h-5 w-5" />
-                  </ListItemPrefix>
-                  Release單簽核
-                </ListItem>
-              </Link>
-            </List>
-          </AccordionBody>
-        </Accordion>
+                            <ListItemPrefix>
+                              <ArrowTurnDownRightIcon className="h-5 w-5" />
+                            </ListItemPrefix>
+                            {ticket.title}
+                          </ListItem>
+                        </Link>
+                      );
+                    })}
+                  </List>
+                </AccordionBody>
+              </Accordion>
+            );
+          }
+        })}
 
         {/* <ListItem>
           <ListItemPrefix>
@@ -173,6 +191,7 @@ const Sidebar = () => {
             />
           </ListItemSuffix>
         </ListItem> */}
+
         <Link href="/settings">
           <ListItem>
             <ListItemPrefix>

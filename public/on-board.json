@@ -72,7 +72,8 @@
       ]
     },
     {
-      "title": "設備 (資訊基礎服務處需求 > Helpdesk > 資訊設備申請)",
+      "title": "設備",
+      "path": "資訊基礎服務處需求 > Helpdesk > 資訊設備申請",
       "inputs": [
         {
           "type": "select",
