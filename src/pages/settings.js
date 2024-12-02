@@ -40,7 +40,7 @@ const Settings = () => {
   const [jsonDataView, setJsonDataView] = useState(null);
   const [newDataMode, setNewDataMode] = useState(false);
 
-  const { setSharedValue } = useSharedContext();
+  const { sharedValue, setSharedValue } = useSharedContext();
 
   const {
     register,
@@ -84,7 +84,6 @@ const Settings = () => {
     setNewDataMode(true);
     setFocusFileName(null);
     setJsonRefData(initJsonData);
-    refreshJsonView();
   };
 
   const deleteData = async () => {
@@ -171,7 +170,7 @@ const Settings = () => {
     };
 
     fetchData();
-  }, [router.isReady, router.basePath, focusFileName, newDataMode]);
+  }, [router.isReady, router.basePath, focusFileName, newDataMode, sharedValue]);
 
   return (
     <Layout>
@@ -190,7 +189,7 @@ const Settings = () => {
               <Row className="mb-3">
                 <Col>
                   <Text
-                    label="檔案名稱"
+                    label="設定檔名稱"
                     idKey="focusFileName"
                     readOnly={!newDataMode}
                     disabled={!newDataMode}

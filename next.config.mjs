@@ -7,7 +7,7 @@ const nextConfig = {
   },
   reactStrictMode: true,
   // ... rest of the configuration.
-  // output: "standalone",
+  output: "standalone",
   // 與 getServerSideProps 衝突
   // output: "export", 
   basePath: "/bpm-guide",

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
@@ -10,6 +10,7 @@ import Text from "@/components/formElements/text";
 import TextArea from "@/components/formElements/textArea";
 import Select from "@/components/formElements/select";
 import Checkbox from "@/components/formElements/checkbox";
+import Radio from "@/components/formElements/radio"
 import Description from "@/components/formElements/description";
 import { toast } from "react-toastify";
 
@@ -27,7 +28,7 @@ function Content({ config }) {
     mode: "all",
   });
 
-  const [submitKey, setSubmitKey] = useState(null)
+  const [submitKey, setSubmitKey] = useState(null);
 
   // Watch all form fields for validate
   watch();
@@ -99,7 +100,9 @@ function Content({ config }) {
                   className="mb-5"
                 >
                   <Card.Header>
-                    <strong>{ticket.title}</strong>
+                    <strong>
+                      {ticket.title} {ticket.path ? `(${ticket.path})` : ""}
+                    </strong>
                   </Card.Header>
                   <Card.Body>
                     {groupColumns.map((rawData, rawIndex) => (
@@ -133,6 +136,15 @@ function Content({ config }) {
                           } else if ("checkbox" === input.type) {
                             return (
                               <Checkbox
+                                key={`${input.key}_${indexInRaw}`}
+                                label={input.label}
+                                idKey={input.key}
+                                options={input.options}
+                              />
+                            );
+                          } else if ("radio" === input.type) {
+                            return (
+                              <Radio
                                 key={`${input.key}_${indexInRaw}`}
                                 label={input.label}
                                 idKey={input.key}
