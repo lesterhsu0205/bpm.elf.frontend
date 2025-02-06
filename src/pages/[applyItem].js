@@ -6,24 +6,42 @@ import Content from "@/components/content";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps() {
+  return { props: {} };
+}
+
 const DynamicPage = () => {
+  console.info("load [applyItem].js");
+
   const router = useRouter();
   const [config, setConfig] = useState(null);
   useEffect(() => {
+    console.info("useEffect in [applyItem].js");
+
     if (!router.isReady || !router.query.applyItem) {
+      console.info("!router.isReady: " + !router.isReady);
+      console.info("!router.query.applyItem: " + !router.query.applyItem);
       return;
     }
 
     const fetchData = async () => {
+      console.info("fetch data");
+
       try {
         const { applyItem } = router.query;
-        const basePath = router.basePath;
 
         // applyItem 如果是給子單.json 就要切成父 json 拿資料, /on-board_applyDevice.json => /on-board.json
         const pathArray = _.split(applyItem, "_");
 
         const response = await fetch(
-          `${basePath}/api/read-setting/${pathArray[0]}.json`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/${pathArray[0]}.json`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -42,13 +60,15 @@ const DynamicPage = () => {
         }
 
         setConfig(jsonData);
+
+        console.info("fetch data done");
       } catch (error) {
         toast.error("Fetch error:", error.message);
       }
     };
 
     fetchData();
-  }, [router.basePath, router.query, router.query.applyItem, router.isReady]);
+  }, [router.query, router.query.applyItem, router.isReady]);
 
   return <Content config={config} />;
 };

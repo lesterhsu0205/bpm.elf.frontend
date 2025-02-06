@@ -14,8 +14,8 @@ import { toast } from "react-toastify";
 const Description = ({ label, idKey }) => {
   const {
     register,
-    reset,
     watch,
+    setValue,
     formState: { errors },
   } = useFormContext({ mode: "all" });
 
@@ -50,7 +50,7 @@ const Description = ({ label, idKey }) => {
   };
 
   const clear = () => {
-    reset({ [idKey]: "" });
+    setValue(idKey, "" );
     toast.success("欄位已清除");
   };
 

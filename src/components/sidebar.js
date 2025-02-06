@@ -30,7 +30,6 @@ import {
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import { useSharedContext } from "@/sharedContext";
@@ -47,19 +46,13 @@ const Sidebar = () => {
     });
   };
 
-  const router = useRouter();
-
   const { sharedValue } = useSharedContext();
 
   useEffect(() => {
     console.info("sidebar useEffect");
-    if (!router.isReady) {
-      return;
-    }
     const fetchData = async () => {
-      const basePath = router.basePath;
       try {
-        const response = await fetch(`${basePath}/api/read-settings`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings`);
 
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -75,7 +68,7 @@ const Sidebar = () => {
     };
 
     fetchData();
-  }, [router.isReady, router.basePath, sharedValue]);
+  }, [sharedValue]);
 
   return (
     <Card className="shadow-xl h-full overflow-y-auto">

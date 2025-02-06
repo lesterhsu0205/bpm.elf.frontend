@@ -8,7 +8,7 @@ const nextConfig = {
   reactStrictMode: true,
   // ... rest of the configuration.
   output: "standalone",
-  // 與 getServerSideProps 衝突
+  // 與 getServerSideProps 無法完美支援動態路由頁面衝突
   // output: "export", 
   basePath: "/bpm-guide",
   // publicRuntimeConfig:{

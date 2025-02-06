@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/router";
 import { useForm, FormProvider } from "react-hook-form";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
@@ -29,9 +28,6 @@ import { useSharedContext } from "@/sharedContext";
 
 const Settings = () => {
   const initJsonData = { name: null, tickets: [] };
-  const router = useRouter();
-
-  const [basePath, SetBasePath] = useState(null);
   const [clickEvt, SetClickEvt] = useState(0);
 
   const [jsonFiles, setJsonFiles] = useState([]);
@@ -88,16 +84,18 @@ const Settings = () => {
 
   const deleteData = async () => {
     const response = await fetch(
-      `${basePath}/api/delete-setting/${focusFileName}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete-setting/${focusFileName}`,
       {
         method: "DELETE",
       }
     );
 
     const result = await response.json();
-    reset({
-      focusFileName: null,
-    });
+
+    setValue("focusFileName", null)
+    // reset({
+    //   focusFileName: null,
+    // });
     // just trigger useEffect
     setFocusFileName(null);
 
@@ -113,7 +111,7 @@ const Settings = () => {
 
     const fileName = focusFileName || `${newFileName}.json`;
 
-    const response = await fetch(`${basePath}/api/write-setting/${fileName}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/write-setting/${fileName}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -125,9 +123,10 @@ const Settings = () => {
 
     if (newDataMode === true) {
       setNewDataMode(false);
-      reset({
-        focusFileName: null,
-      });
+      setValue("focusFileName", null)
+      // reset({
+      //   focusFileName: null,
+      // });
       setFocusFileName(fileName);
     }
     // refreshJsonView();
@@ -137,14 +136,14 @@ const Settings = () => {
   };
 
   useEffect(() => {
-    if (!router.isReady || newDataMode === true) {
+    if (newDataMode === true) {
       return;
     }
 
     const fetchData = async () => {
       try {
         // const response = await fetch(`${router.basePath}/${focusFileName}`);
-        const response = await fetch(`${router.basePath}/api/read-settings`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -161,7 +160,6 @@ const Settings = () => {
           setFocusFileName(focusFile.file);
         }
 
-        SetBasePath(router.basePath);
         setJsonFiles(resp);
         setJsonDataView({ ...focusFile.content });
       } catch (error) {
@@ -170,7 +168,7 @@ const Settings = () => {
     };
 
     fetchData();
-  }, [router.isReady, router.basePath, focusFileName, newDataMode, sharedValue]);
+  }, [focusFileName, newDataMode, sharedValue]);
 
   return (
     <Layout>

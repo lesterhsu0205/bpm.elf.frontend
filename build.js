@@ -57,6 +57,7 @@ const compressToTar = (src, dest) => {
 
 const main = async () => {
   try {
+    fs.rmSync("dist", { recursive: true, force: true });
     mkdirRecursive(distPath);
 
     copyRecursiveSync(standalonePath, distPath);
