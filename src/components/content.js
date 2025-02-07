@@ -5,7 +5,6 @@ import { useForm, FormProvider } from "react-hook-form";
 import { Form, Row, Button, Stack, Card } from "react-bootstrap";
 import _ from "lodash";
 
-import Layout from "@/components/layout";
 import Text from "@/components/formElements/text";
 import TextArea from "@/components/formElements/textArea";
 import Select from "@/components/formElements/select";
@@ -77,7 +76,6 @@ function Content({ config }) {
   };
 
   return (
-    <Layout>
       <FormProvider
         watch={watch}
         register={register}
@@ -187,7 +185,6 @@ function Content({ config }) {
             })}
         </Form>
       </FormProvider>
-    </Layout>
   );
 }
 

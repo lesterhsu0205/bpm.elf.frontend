@@ -1,7 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import Content from "@/components/content";
 import { toast } from "react-toastify";
 import _ from "lodash";
@@ -13,64 +11,56 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps() {
-  return { props: {} };
+export async function getStaticProps({ params }) {
+  const { applyItem } = params;
+
+  const data = await fetchData({ applyItem });
+
+  return {
+    props: {
+      data,
+      revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
+    },
+  };
 }
 
-const DynamicPage = () => {
+const DynamicPage = ({ data }) => {
   console.info("load [applyItem].js");
+  return <Content config={data} />;
+};
 
-  const router = useRouter();
-  const [config, setConfig] = useState(null);
-  useEffect(() => {
-    console.info("useEffect in [applyItem].js");
+const fetchData = async ({ applyItem }) => {
+  console.info("fetch data");
 
-    if (!router.isReady || !router.query.applyItem) {
-      console.info("!router.isReady: " + !router.isReady);
-      console.info("!router.query.applyItem: " + !router.query.applyItem);
-      return;
+  try {
+    // applyItem 如果是給子單.json 就要切成父 json 拿資料, /on-board_applyDevice.json => /on-board.json
+    const pathArray = _.split(applyItem, "_");
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/${pathArray[0]}.json`
+    );
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
     }
 
-    const fetchData = async () => {
-      console.info("fetch data");
+    let jsonData = await response.json();
 
-      try {
-        const { applyItem } = router.query;
+    // 子單必須重組 json (基本資料+子單)
+    if (pathArray.length > 1) {
+      jsonData = {
+        name: pathArray[1],
+        tickets: jsonData.tickets.filter((item) =>
+          ["基本資料", pathArray[1]].includes(item.title)
+        ),
+      };
+    }
 
-        // applyItem 如果是給子單.json 就要切成父 json 拿資料, /on-board_applyDevice.json => /on-board.json
-        const pathArray = _.split(applyItem, "_");
+    console.info("fetch data done");
 
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/${pathArray[0]}.json`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        let jsonData = await response.json();
-
-        // 子單必須重組 json (基本資料+子單)
-        if (pathArray.length > 1) {
-          jsonData = {
-            name: pathArray[1],
-            tickets: jsonData.tickets.filter((item) =>
-              ["基本資料", pathArray[1]].includes(item.title)
-            ),
-          };
-        }
-
-        setConfig(jsonData);
-
-        console.info("fetch data done");
-      } catch (error) {
-        toast.error("Fetch error:", error.message);
-      }
-    };
-
-    fetchData();
-  }, [router.query, router.query.applyItem, router.isReady]);
-
-  return <Content config={config} />;
+    return jsonData;
+  } catch (error) {
+    toast.error("Fetch error:", error.message);
+  }
 };
 
 export default DynamicPage;

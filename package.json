@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && node build.js",
-    "start": "node dist\\com.line.bank.bxi.bpm.guide\\server.js",
+    "start": "node dist/com.line.bank.bxi.bpm.guide/server.js",
     "lint": "next lint"
   },
   "dependencies": {

@@ -6,7 +6,6 @@ import { Form, Row, Col, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
-import Layout from "@/components/layout";
 import JsonEditor from "@/components/jsonEditor";
 import Text from "@/components/formElements/text";
 import { useSharedContext } from "@/sharedContext";
@@ -92,7 +91,7 @@ const Settings = () => {
 
     const result = await response.json();
 
-    setValue("focusFileName", null)
+    setValue("focusFileName", null);
     // reset({
     //   focusFileName: null,
     // });
@@ -111,19 +110,22 @@ const Settings = () => {
 
     const fileName = focusFileName || `${newFileName}.json`;
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/write-setting/${fileName}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ...jsonDataRef.current }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/write-setting/${fileName}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...jsonDataRef.current }),
+      }
+    );
 
     const result = await response.json();
 
     if (newDataMode === true) {
       setNewDataMode(false);
-      setValue("focusFileName", null)
+      setValue("focusFileName", null);
       // reset({
       //   focusFileName: null,
       // });
@@ -143,7 +145,9 @@ const Settings = () => {
     const fetchData = async () => {
       try {
         // const response = await fetch(`${router.basePath}/${focusFileName}`);
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings`
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -171,94 +175,92 @@ const Settings = () => {
   }, [focusFileName, newDataMode, sharedValue]);
 
   return (
-    <Layout>
-      <Row className="mb-3">
-        <Col className="col-8">
-          <FormProvider
-            watch={watch}
-            register={register}
-            getValues={getValues}
-            setValue={setValue}
-            reset={reset}
-            control={control}
-            formState={formState}
-          >
-            <Form noValidate onSubmit={handleSubmit(submit)}>
-              <Row className="mb-3">
-                <Col>
-                  <Text
-                    label="設定檔名稱"
-                    idKey="focusFileName"
-                    readOnly={!newDataMode}
-                    disabled={!newDataMode}
-                    placeholder={`${_.replace(focusFileName, ".json", "")}`}
-                    suffix=".json"
-                  />
-                </Col>
-                <Col className="d-flex justify-content-end">
+    <Row className="mb-3">
+      <Col className="col-8">
+        <FormProvider
+          watch={watch}
+          register={register}
+          getValues={getValues}
+          setValue={setValue}
+          reset={reset}
+          control={control}
+          formState={formState}
+        >
+          <Form noValidate onSubmit={handleSubmit(submit)}>
+            <Row className="mb-3">
+              <Col>
+                <Text
+                  label="設定檔名稱"
+                  idKey="focusFileName"
+                  readOnly={!newDataMode}
+                  disabled={!newDataMode}
+                  placeholder={`${_.replace(focusFileName, ".json", "")}`}
+                  suffix=".json"
+                />
+              </Col>
+              <Col className="d-flex justify-content-end">
+                <Button
+                  variant="success"
+                  className="bs-success me-2"
+                  onClick={newData}
+                  disabled={newDataMode}
+                >
+                  New
+                </Button>
+                <Button
+                  variant="primary"
+                  className="bs-primary me-2"
+                  type="submit"
+                >
+                  Update
+                </Button>
+                <Button
+                  variant="danger"
+                  className={`bs-danger ${newDataMode === true && "me-2"}`}
+                  onClick={deleteData}
+                  disabled={newDataMode}
+                >
+                  Delete
+                </Button>
+                {newDataMode === true && (
                   <Button
-                    variant="success"
-                    className="bs-success me-2"
-                    onClick={newData}
-                    disabled={newDataMode}
+                    variant="secondary"
+                    className="bs-secondary"
+                    onClick={() => setNewDataMode(false)}
                   >
-                    New
+                    Cancel
                   </Button>
-                  <Button
-                    variant="primary"
-                    className="bs-primary me-2"
-                    type="submit"
-                  >
-                    Update
-                  </Button>
-                  <Button
-                    variant="danger"
-                    className={`bs-danger ${newDataMode === true && "me-2"}`}
-                    onClick={deleteData}
-                    disabled={newDataMode}
-                  >
-                    Delete
-                  </Button>
-                  {newDataMode === true && (
-                    <Button
-                      variant="secondary"
-                      className="bs-secondary"
-                      onClick={() => setNewDataMode(false)}
-                    >
-                      Cancel
-                    </Button>
-                  )}
-                </Col>
-              </Row>
-            </Form>
-          </FormProvider>
-          <Row className="mb-3">
-            <JsonEditor data={jsonDataRef.current} setData={setJsonRefData} />
-          </Row>
-        </Col>
-        <Col className="col-4">
-          <strong>設定檔</strong>
-          {jsonFiles.map((file, index) => (
-            <li key={index}>
-              <a
-                href="#"
-                className="workaround"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setFocusFileName(file.file);
-                  SetClickEvt(clickEvt + 1);
-                }}
-              >
-                {file.content.name}
-              </a>
-            </li>
-          ))}
-        </Col>
-        {/* <Col>
+                )}
+              </Col>
+            </Row>
+          </Form>
+        </FormProvider>
+        <Row className="mb-3">
+          <JsonEditor data={jsonDataRef.current} setData={setJsonRefData} />
+        </Row>
+      </Col>
+      <Col className="col-4">
+        <strong>設定檔</strong>
+        {jsonFiles.map((file, index) => (
+          <li key={index}>
+            <a
+              href="#"
+              className="workaround"
+              onClick={(e) => {
+                e.preventDefault();
+                setFocusFileName(file.file);
+                SetClickEvt(clickEvt + 1);
+              }}
+            >
+              {file.content.name}
+            </a>
+          </li>
+        ))}
+      </Col>
+      {/* <Col>
           <pre>{JSON.stringify(jsonDataView, null, 2)}</pre>
         </Col> */}
-      </Row>
-    </Layout>
+    </Row>
   );
 };
 

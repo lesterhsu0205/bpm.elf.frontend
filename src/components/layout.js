@@ -25,7 +25,7 @@ const Layout = ({ children }) => (
     <div className="my-flex">
       <Sidebar />
       <div
-        as="main"
+        as="main" // 與 <Main /> 無關
         className="content-container"
         // className={`${inter.className} content-container flex-grow-1`}
       >
