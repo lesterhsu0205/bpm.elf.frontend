@@ -13,6 +13,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const { applyItem } = params;
+  console.info("applyItem: " + applyItem);
 
   const data = await fetchData({ applyItem });
 
@@ -45,16 +46,25 @@ const fetchData = async ({ applyItem }) => {
 
     let jsonData = await response.json();
 
-    // 子單必須重組 json (基本資料+子單)
+    // FIXME: compose 單內的子單必須重組 json (基本資料+子單)
     if (pathArray.length > 1) {
       jsonData = {
         name: pathArray[1],
         tickets: jsonData.tickets.filter((item) =>
-          ["基本資料", pathArray[1]].includes(item.title)
+          ["基本資料", pathArray[1]].includes(item.name)
         ),
       };
+    } else {
+      // 一般子單需用 tickets 包 for 前端頁面
+      if (!jsonData.tickets) {
+        jsonData = {
+          name: jsonData.name,
+          tickets: [jsonData],
+        };
+      }
     }
 
+    console.info(jsonData);
     console.info("fetch data done");
 
     return jsonData;

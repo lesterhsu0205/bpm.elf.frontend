@@ -9,7 +9,7 @@ import Text from "@/components/formElements/text";
 import TextArea from "@/components/formElements/textArea";
 import Select from "@/components/formElements/select";
 import Checkbox from "@/components/formElements/checkbox";
-import Radio from "@/components/formElements/radio"
+import Radio from "@/components/formElements/radio";
 import Description from "@/components/formElements/description";
 import { toast } from "react-toastify";
 
@@ -32,8 +32,24 @@ function Content({ config }) {
   // Watch all form fields for validate
   watch();
 
-  const submit = (data) => {
+  // 預處理 data，補上缺失的變數
+  function processData(templateStr, data) {
+    const templateVars = templateStr.match(/\$\{([a-zA-Z0-9_]+)\}/g) || [];
 
+    // 過濾變數名稱，去掉 `${}` 符號
+    const missingVars = templateVars
+      .map((v) => v.replace(/\$\{|\}/g, ""))
+      .filter((key) => !(key in data));
+
+    // 自動補上 `${變數名}`
+    missingVars.forEach((key) => {
+      data[key] = `\$\{${key}\}`; // 保留原格式
+    });
+
+    return data;
+  }
+
+  const submit = (data) => {
     try {
       for (let i = 0; i < config.tickets.length; i++) {
         for (let j = 0; j < config.tickets[i].inputs.length; j++) {
@@ -43,7 +59,10 @@ function Content({ config }) {
           ) {
             const compiled = _.template(config.tickets[i].inputs[j].template);
 
-            setValue(config.tickets[i].inputs[j].key, compiled(data));
+            setValue(
+              config.tickets[i].inputs[j].key,
+              compiled(processData(config.tickets[i].inputs[j].template, data))
+            );
           }
         }
       }
@@ -76,30 +95,34 @@ function Content({ config }) {
   };
 
   return (
-      <FormProvider
-        watch={watch}
-        register={register}
-        getValues={getValues}
-        setValue={setValue}
-        reset={reset}
-        control={control}
-        formState={formState}
-      >
-        <Form noValidate onSubmit={handleSubmit(submit)}>
-          {config &&
-            config.tickets.map((ticket) => {
+    <FormProvider
+      watch={watch}
+      register={register}
+      getValues={getValues}
+      setValue={setValue}
+      reset={reset}
+      control={control}
+      formState={formState}
+    >
+      <Form noValidate onSubmit={handleSubmit(submit)}>
+        {config &&
+          config.tickets &&
+          config.tickets.length > 0 &&
+          config.tickets
+            .filter((ticket) => ticket.inputs)
+            .map((ticket) => {
               const groupColumns = getGroupColumns(ticket.inputs);
 
               return (
                 <Card
-                  key={ticket.title}
+                  key={ticket.name}
                   bg="light"
                   border="light"
                   className="mb-5"
                 >
                   <Card.Header>
                     <strong>
-                      {ticket.title} {ticket.path ? `(${ticket.path})` : ""}
+                      {ticket.name} {ticket.path ? `(${ticket.path})` : ""}
                     </strong>
                   </Card.Header>
                   <Card.Body>
@@ -183,8 +206,8 @@ function Content({ config }) {
                 </Card>
               );
             })}
-        </Form>
-      </FormProvider>
+      </Form>
+    </FormProvider>
   );
 }
 

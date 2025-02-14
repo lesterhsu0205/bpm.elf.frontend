@@ -52,7 +52,9 @@ const Sidebar = () => {
     console.info("sidebar useEffect");
     const fetchData = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings`
+        );
 
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -83,7 +85,7 @@ const Sidebar = () => {
         </Link>
 
         {data.map((setting, index) => {
-          if (setting.content.tickets.length < 2) {
+          if (!setting.content.tickets) {
             return (
               <Link
                 key={`${setting.file}_${index}`}
@@ -101,70 +103,83 @@ const Sidebar = () => {
             );
           } else {
             return (
-              <Accordion
+              <Link
                 key={`${setting.file}_${index}`}
-                open={accordionState[index]}
-                icon={
-                  <ChevronDownIcon
-                    strokeWidth={2.5}
-                    className={`mx-auto h-4 w-4 transition-transform ${
-                      accordionState[index] ? "" : "rotate-90"
-                    }`}
-                  />
-                }
+                href={`/${_.replace(setting.file, ".json", "")}`}
               >
-                <Link href={`/${_.replace(setting.file, ".json", "")}`}>
-                  <ListItem className="p-0" selected={accordionState[index]}>
-                    <AccordionHeader
-                      onClick={() => toggleAccordion(index)}
-                      className="border-b-0 p-3"
-                    >
-                      <ListItemPrefix>
-                        <TicketIcon className="h-5 w-5" />
-                      </ListItemPrefix>
-                      <Typography
-                        color="blue-gray"
-                        className="mr-auto font-normal"
-                      >
-                        {setting.content.name}
-                      </Typography>
-                    </AccordionHeader>
-                  </ListItem>
-                </Link>
+                {/* 透過傳參數去配對 json file 會顯示在 url 上，所以 json 命名應與 path name 一樣，如 /test -> test.json */}
+                {/* href={{ pathname: "/test", param: { gg: "onboard" } }} */}
+                <ListItem>
+                  <ListItemPrefix>
+                    <RectangleStackIcon className="h-5 w-5" />
+                  </ListItemPrefix>
+                  {setting.content.name}
+                </ListItem>
+              </Link>
+              // <Accordion
+              //   key={`${setting.file}_${index}`}
+              //   open={accordionState[index]}
+              //   icon={
+              //     <ChevronDownIcon
+              //       strokeWidth={2.5}
+              //       className={`mx-auto h-4 w-4 transition-transform ${
+              //         accordionState[index] ? "" : "rotate-90"
+              //       }`}
+              //     />
+              //   }
+              // >
+              //   <Link href={`/${_.replace(setting.file, ".json", "")}`}>
+              //     <ListItem className="p-0" selected={accordionState[index]}>
+              //       <AccordionHeader
+              //         onClick={() => toggleAccordion(index)}
+              //         className="border-b-0 p-3"
+              //       >
+              //         <ListItemPrefix>
+              //           <TicketIcon className="h-5 w-5" />
+              //         </ListItemPrefix>
+              //         <Typography
+              //           color="blue-gray"
+              //           className="mr-auto font-normal"
+              //         >
+              //           {setting.content.name}
+              //         </Typography>
+              //       </AccordionHeader>
+              //     </ListItem>
+              //   </Link>
 
-                <AccordionBody className="py-0 px-3">
-                  <List className="p-0">
-                    {setting.content.tickets.map((ticket, idx) => {
-                      // FIXME: 識別不要用"基本資料"
-                      if (ticket.title === "基本資料") {
-                        return (
-                          <React.Fragment
-                            key={`${ticket.title}_${idx}`}
-                          ></React.Fragment>
-                        );
-                      }
-                      return (
-                        <Link
-                          href={`/${_.replace(setting.file, ".json", "")}_${
-                            ticket.title
-                          }`}
-                          key={`${ticket.title}_${idx}`}
-                        >
-                          <ListItem>
-                            {/* <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix> */}
-                            <ListItemPrefix>
-                              <ArrowTurnDownRightIcon className="h-5 w-5" />
-                            </ListItemPrefix>
-                            {ticket.title}
-                          </ListItem>
-                        </Link>
-                      );
-                    })}
-                  </List>
-                </AccordionBody>
-              </Accordion>
+              //   <AccordionBody className="py-0 px-3">
+              //     <List className="p-0">
+              //       {setting.content.tickets.map((ticket, idx) => {
+              //         // FIXME: 識別不要用"基本資料"
+              //         if (ticket.name === "基本資料") {
+              //           return (
+              //             <React.Fragment
+              //               key={`${ticket.name}_${idx}`}
+              //             ></React.Fragment>
+              //           );
+              //         }
+              //         return (
+              //           <Link
+              //             href={`/${_.replace(setting.file, ".json", "")}_${
+              //               ticket.name
+              //             }`}
+              //             key={`${ticket.name}_${idx}`}
+              //           >
+              //             <ListItem>
+              //               {/* <ListItemPrefix>
+              //     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+              //   </ListItemPrefix> */}
+              //               <ListItemPrefix>
+              //                 <ArrowTurnDownRightIcon className="h-5 w-5" />
+              //               </ListItemPrefix>
+              //               {ticket.name}
+              //             </ListItem>
+              //           </Link>
+              //         );
+              //       })}
+              //     </List>
+              //   </AccordionBody>
+              // </Accordion>
             );
           }
         })}

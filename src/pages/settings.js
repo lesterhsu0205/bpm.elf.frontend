@@ -146,7 +146,7 @@ const Settings = () => {
       try {
         // const response = await fetch(`${router.basePath}/${focusFileName}`);
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings-raw`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
