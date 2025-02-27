@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Form, Row, Col, Button } from "react-bootstrap";
+import { Select, Option } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
@@ -27,7 +28,6 @@ import { useSharedContext } from "@/sharedContext";
 
 const Settings = () => {
   const initJsonData = { name: null, tickets: [] };
-  const [clickEvt, SetClickEvt] = useState(0);
 
   const [jsonFiles, setJsonFiles] = useState([]);
   const [focusFileName, setFocusFileName] = useState(null);
@@ -176,7 +176,7 @@ const Settings = () => {
 
   return (
     <Row className="mb-3">
-      <Col className="col-8">
+      <Col>
         <FormProvider
           watch={watch}
           register={register}
@@ -189,15 +189,34 @@ const Settings = () => {
           <Form noValidate onSubmit={handleSubmit(submit)}>
             <Row className="mb-3">
               <Col>
-                <Text
-                  label="設定檔名稱"
-                  idKey="focusFileName"
-                  readOnly={!newDataMode}
-                  disabled={!newDataMode}
-                  placeholder={`${_.replace(focusFileName, ".json", "")}`}
-                  suffix=".json"
-                />
+                {newDataMode === true ? (
+                  <Text
+                    label="設定檔名稱"
+                    idKey="focusFileName"
+                    readOnly={!newDataMode}
+                    disabled={!newDataMode}
+                    placeholder={`${_.replace(focusFileName, ".json", "")}`}
+                    suffix=".json"
+                  />
+                ) : (
+                  <Select
+                    variant="standard"
+                    label="設定檔"
+                    onChange={(val) => {
+                      router.push(`/settings/${val}`, undefined, {
+                        scroll: false,
+                      }); // 🔹 更新 URL Path，不刷新頁面
+                    }}
+                  >
+                    {jsonFiles.map((file, index) => (
+                      <Option key={index} value={file.file}>
+                        {`${file.content.name} (${file.file})`}
+                      </Option>
+                    ))}
+                  </Select>
+                )}
               </Col>
+              <Col></Col>
               <Col className="d-flex justify-content-end">
                 <Button
                   variant="success"
@@ -239,27 +258,6 @@ const Settings = () => {
           <JsonEditor data={jsonDataRef.current} setData={setJsonRefData} />
         </Row>
       </Col>
-      <Col className="col-4">
-        <strong>設定檔</strong>
-        {jsonFiles.map((file, index) => (
-          <li key={index}>
-            <a
-              href="#"
-              className="workaround"
-              onClick={(e) => {
-                e.preventDefault();
-                setFocusFileName(file.file);
-                SetClickEvt(clickEvt + 1);
-              }}
-            >
-              {file.content.name}
-            </a>
-          </li>
-        ))}
-      </Col>
-      {/* <Col>
-          <pre>{JSON.stringify(jsonDataView, null, 2)}</pre>
-        </Col> */}
     </Row>
   );
 };

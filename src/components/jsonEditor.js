@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 
 const Placeholder = () => <div>Loading Editor...</div>;
 
-const JsonEditor = ({ data, setData }) => {
+const JsonEditor = ({ data, setData, onUpdate }) => {
   const [Editor, setEditor] = useState(() => Placeholder);
 
   useEffect(() => {
-    async function loadLibary() {
+    async function loadLibrary() {
       const mod = await import("json-edit-react");
       setEditor(() => mod.JsonEditor);
     }
-    loadLibary();
+    loadLibrary();
   }, []);
 
   return (
@@ -23,6 +23,7 @@ const JsonEditor = ({ data, setData }) => {
       // collapse={3}
       showCollectionCount="when-closed"
       maxWidth="100%"
+      onUpdate={onUpdate}
     />
   );
 };
