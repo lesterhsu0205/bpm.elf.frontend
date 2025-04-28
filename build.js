@@ -3,12 +3,13 @@ const path = require("path");
 const { exec } = require("child_process");
 const tar = require("tar");
 
-const distPath = path.resolve(__dirname, "dist/com.line.bank.bxi.bpm.guide");
+const distPath = path.resolve(__dirname, "dist/com.line.bank.bxi.bpm.elf.frontend");
 const standalonePath = path.resolve(__dirname, ".next/standalone");
 const staticPath = path.resolve(__dirname, ".next/static");
+const publicPath = path.resolve(__dirname, "public");
 const outputTar = path.resolve(
   __dirname,
-  "dist/com.line.bank.bxi.bpm.guide.tar.gz"
+  "dist/com.line.bank.bxi.bpm.elf.frontend.tar.gz"
 );
 
 const mkdirRecursive = (dir) => {
@@ -65,6 +66,7 @@ const main = async () => {
     const staticDest = path.join(distPath, ".next/static");
     mkdirRecursive(staticDest);
     copyRecursiveSync(staticPath, staticDest);
+    copyRecursiveSync(publicPath, path.join(distPath, "public"))
 
     compressToTar(distPath, outputTar);
   } catch (error) {

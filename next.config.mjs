@@ -10,9 +10,9 @@ const nextConfig = {
   output: "standalone",
   // 與 getServerSideProps 無法完美支援動態路由頁面衝突
   // output: "export", 
-  basePath: "/bpm-guide",
+  basePath: "/bpm-elf",
   // publicRuntimeConfig:{
-  //   basePath: "/bpm-guide",
+  //   basePath: "/bpm-elf",
   // }
 };
 

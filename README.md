@@ -54,8 +54,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 4. backup last build
 
    ```shell
-   sudo mv ~/lester/com.line.bank.bxi.bpm.guide.tar ~/lester/com.line.bank.bxi.bpm.guide.tar.[date]
-   sudo rm -rf ~/lester/com.line.bank.bxi.bpm.guide
+   sudo mv ~/lester/com.line.bank.bxi.bpm.elf.frontend.tar ~/lester/com.line.bank.bxi.bpm.elf.frontend.tar.[date]
+   sudo rm -rf ~/lester/com.line.bank.bxi.bpm.elf.frontend
    ```
 
 5. scp project to deploy server
@@ -65,7 +65,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 7. restart
 
    ```shell
-   sudo systemctl restart line.node.devbpmelf.service
+   sudo systemctl restart line.node.devbpmelffrontend.service
    ```
 
 ## Build & deploy to jboss server (CSR mode only)
@@ -73,10 +73,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ```shell
 npm run build
 cd out
-jar -cvf bpm-guide.war *
+jar -cvf bpm-elf-frontend.war *
 
 ssh tvdev-ans-lab01...
-sudo mv /tmp/bpm-guide.war /opt/apps/bpmguide/
-sudo chown wasadmin:was /opt/apps/bpmguide/bpm-guide.war
-sudo systemctl restart line.was.devbpmguide.service
+sudo mv /tmp/bpm-elf-frontend.war /opt/apps/bpmelffrontend/
+sudo chown wasadmin:was /opt/apps/bpmelffrontend/bpm-elf-frontend.war
+sudo systemctl restart line.was.devbpmelffrontend.service
 ```

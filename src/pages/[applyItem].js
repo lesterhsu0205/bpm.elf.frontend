@@ -26,6 +26,7 @@ export async function getStaticProps({ params }) {
 }
 
 const DynamicPage = ({ data }) => {
+  // TODO: 這邊要檢查雜魚 path 就不給過
   console.info("load [applyItem].js");
   return <Content config={data} />;
 };
@@ -37,14 +38,19 @@ const fetchData = async ({ applyItem }) => {
     // applyItem 如果是給子單.json 就要切成父 json 拿資料, /on-board_applyDevice.json => /on-board.json
     const pathArray = _.split(applyItem, "_");
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/${pathArray[0]}.json`
+    console.info(
+      `url: ${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/${pathArray[0]}.json`
     );
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
 
-    let jsonData = await response.json();
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/${pathArray[0]}.json`
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      let jsonData = await response.json();
 
     // FIXME: compose 單內的子單必須重組 json (基本資料+子單)
     if (pathArray.length > 1) {
@@ -69,6 +75,7 @@ const fetchData = async ({ applyItem }) => {
 
     return jsonData;
   } catch (error) {
+    console.error("🔥 Fetch Error:", error);
     toast.error("Fetch error:", error.message);
   }
 };

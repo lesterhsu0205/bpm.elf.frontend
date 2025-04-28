@@ -1,11 +1,11 @@
 {
-  "name": "com.line.bank.bxi.bpm.elf",
+  "name": "com.line.bank.bxi.bpm.elf.frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "export NODE_TLS_REJECT_UNAUTHORIZED=0 && next dev",
     "build": "next build && node build.js",
-    "start": "node dist/com.line.bank.bxi.bpm.guide/server.js",
+    "start": "export NODE_TLS_REJECT_UNAUTHORIZED=0 && node dist/com.line.bank.bxi.bpm.elf.frontend/server.js",
     "lint": "next lint"
   },
   "dependencies": {
