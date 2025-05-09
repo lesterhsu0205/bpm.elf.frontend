@@ -3,14 +3,17 @@ const path = require("path");
 const { exec } = require("child_process");
 const tar = require("tar");
 
-const distPath = path.resolve(__dirname, "dist/com.line.bank.bxi.bpm.elf.frontend");
+const distPath = path.resolve(
+  __dirname,
+  "dist/opt/sw/bpm.elf.frontend/{host}-01/nodejs"
+);
 const standalonePath = path.resolve(__dirname, ".next/standalone");
 const staticPath = path.resolve(__dirname, ".next/static");
 const publicPath = path.resolve(__dirname, "public");
-const outputTar = path.resolve(
-  __dirname,
-  "dist/com.line.bank.bxi.bpm.elf.frontend.tar.gz"
-);
+const dockerComposeYml = path.resolve(__dirname, "docker-compose.yml");
+const patchHttpsJs = path.resolve(__dirname, "patch-https.js");
+const certPath = path.resolve(__dirname, "certs");
+const outputTar = path.resolve(__dirname, "dist/bpm.elf.frontend.tar.gz");
 
 const mkdirRecursive = (dir) => {
   if (!fs.existsSync(dir)) {
@@ -20,6 +23,17 @@ const mkdirRecursive = (dir) => {
 };
 
 const copyRecursiveSync = (src, dest) => {
+  const stat = fs.statSync(src);
+  if (stat.isFile()) {
+    // 如果是檔案就直接拷貝，然後結束
+    mkdirRecursive(dest);
+    const fileName = path.basename(src);
+    const destFile = path.join(dest, fileName);
+    fs.copyFileSync(src, destFile);
+    console.info(`Copied file: ${src} -> ${destFile}`);
+    return;
+  }
+  // 否則才當資料夾掃目錄
   if (!fs.existsSync(src)) {
     console.error(`Source path does not exist: ${dir}`);
     return;
@@ -59,14 +73,13 @@ const compressToTar = (src, dest) => {
 const main = async () => {
   try {
     fs.rmSync("dist", { recursive: true, force: true });
-    mkdirRecursive(distPath);
 
     copyRecursiveSync(standalonePath, distPath);
-
-    const staticDest = path.join(distPath, ".next/static");
-    mkdirRecursive(staticDest);
-    copyRecursiveSync(staticPath, staticDest);
-    copyRecursiveSync(publicPath, path.join(distPath, "public"))
+    copyRecursiveSync(staticPath, path.join(distPath, ".next/static"));
+    copyRecursiveSync(publicPath, path.join(distPath, "public"));
+    copyRecursiveSync(certPath, path.join(distPath, "certs"));
+    copyRecursiveSync(dockerComposeYml, path.join(distPath, "bin"));
+    copyRecursiveSync(patchHttpsJs, distPath);
 
     compressToTar(distPath, outputTar);
   } catch (error) {

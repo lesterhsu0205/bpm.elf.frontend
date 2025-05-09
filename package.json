@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "export NODE_TLS_REJECT_UNAUTHORIZED=0 && next dev",
-    "build": "next build && node build.js",
-    "start": "export NODE_TLS_REJECT_UNAUTHORIZED=0 && node dist/com.line.bank.bxi.bpm.elf.frontend/server.js",
+    "local": "cross-env NODE_EXTRA_CA_CERTS=certs/ca.crt next dev",
+    "build:dev": "dotenv -e .env.dev -- next build && node build.js",
+    "build:stg": "dotenv -e .env.stg -- next build && node build.js",
+    "build:uat": "dotenv -e .env.uat -- next build && node build.js",
+    "build:prod": "dotenv -e .env.prod -- next build && node build.js",
+    "start": "cross-env NODE_EXTRA_CA_CERTS=certs/ca.crt node --require ./dist/opt/sw/bpm.elf.frontend/{host}-01/nodejs/patch-https.js dist/opt/sw/bpm.elf.frontend/{host}-01/nodejs/server.js",
     "lint": "next lint"
   },
   "dependencies": {
@@ -28,6 +31,8 @@
     "tailwindcss": "3.4.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "tar": "^7.4.3"

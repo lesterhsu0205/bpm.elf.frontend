@@ -4,24 +4,22 @@ import Content from "@/components/content";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: "blocking",
-  };
-}
+// export async function getStaticPaths() {
+//   return {
+//     paths: [],
+//     fallback: "blocking",
+//   };
+// }
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   const { applyItem } = params;
   console.info("applyItem: " + applyItem);
 
   const data = await fetchData({ applyItem });
 
   return {
-    props: {
-      data,
-      revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
-    },
+    props: { data },
+    // revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
   };
 }
 

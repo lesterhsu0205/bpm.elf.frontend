@@ -4,24 +4,22 @@ import Content from "@/components/content";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: "blocking",
-  };
-}
+// export async function getStaticPaths() {
+//   return {
+//     paths: [],
+//     fallback: "blocking",
+//   };
+// }
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   const { applyItem } = params;
   console.info("applyItem: " + applyItem);
 
   const data = await fetchData({ applyItem });
 
   return {
-    props: {
-      data,
-      revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
-    },
+    props: { data },
+    // revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
   };
 }
 
@@ -42,15 +40,15 @@ const fetchData = async ({ applyItem }) => {
       `url: ${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/${pathArray[0]}.json`
     );
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/${pathArray[0]}.json`
-      );
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/${pathArray[0]}.json`
+    );
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
 
-      let jsonData = await response.json();
+    let jsonData = await response.json();
 
     // FIXME: compose 單內的子單必須重組 json (基本資料+子單)
     if (pathArray.length > 1) {

@@ -53,7 +53,7 @@ const Sidebar = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings`
+          `/bpm-elf/api/read-settings`
         );
 
         if (!response.ok) {

@@ -50,6 +50,11 @@ body {
   margin-left: 250px; /* Width of the fixed sidebar */
 }
 
+/* json-edit-react 隱藏根節點冒號*/
+.jer-key-colon {
+  display: none;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

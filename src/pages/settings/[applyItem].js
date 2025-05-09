@@ -13,25 +13,25 @@ import { useSharedContext } from "@/sharedContext";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: "blocking",
-  };
-}
+// export async function getStaticPaths() {
+//   return {
+//     paths: [],
+//     fallback: "blocking",
+//   };
+// }
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   const { applyItem } = params;
   console.info("applyItem: " + applyItem);
 
-  const data = await fetchData();
+  const data = await fetchData({ isClientCall: false });
 
   return {
     props: {
       applyItem,
       data,
-      revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
     },
+    // revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
   };
 }
 
@@ -75,7 +75,7 @@ const DynamicPage = ({ applyItem, data }) => {
   useEffect(() => {
     const isValidOption = allJsonData.some((opt) => opt.file === applyItem);
 
-    setSelected(isValidOption === true ?applyItem:null)
+    setSelected(isValidOption === true ? applyItem : null);
 
     setJsonData(
       applyItem === "new"
@@ -107,16 +107,13 @@ const DynamicPage = ({ applyItem, data }) => {
 
   // FIXME: 處理 compose 單
   const deleteData = async () => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete-setting/${applyItem}`,
-      {
-        method: "DELETE",
-      }
-    );
+    const response = await fetch(`/bpm-elf/api/delete-setting/${applyItem}`, {
+      method: "DELETE",
+    });
 
     const result = await response.json();
     refreshSidebar();
-    setAllJsonData(await fetchData());
+    setAllJsonData(await fetchData({ isClientCall: true }));
     router.replace("/settings/none");
     toast.success(result.message);
   };
@@ -130,16 +127,13 @@ const DynamicPage = ({ applyItem, data }) => {
 
     const fileName = applyItem === "new" ? `${newFileName}.json` : applyItem;
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/write-setting/${fileName}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...jsonData }),
-      }
-    );
+    const response = await fetch(`/bpm-elf/api/write-setting/${fileName}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ...jsonData }),
+    });
 
     const result = await response.json();
 
@@ -149,7 +143,7 @@ const DynamicPage = ({ applyItem, data }) => {
     }
 
     refreshSidebar();
-    setAllJsonData(await fetchData());
+    setAllJsonData(await fetchData({ isClientCall: true }));
     toast.success(result.message);
   };
 
@@ -233,12 +227,14 @@ const DynamicPage = ({ applyItem, data }) => {
   );
 };
 
-const fetchData = async () => {
+const fetchData = async ({ isClientCall }) => {
   console.info("fetch data");
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings-raw`
+      isClientCall === true
+        ? "/bpm-elf/api/read-settings-raw"
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings-raw`
     );
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -248,7 +244,8 @@ const fetchData = async () => {
 
     return resp;
   } catch (error) {
-    toast.error(`Fetch error: ${error.message}`);
+    console.error("🔥 Fetch Error:", error);
+    toast.error("Fetch error:", error.message);
   }
 };
 
