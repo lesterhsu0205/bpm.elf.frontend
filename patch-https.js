@@ -4,8 +4,8 @@ const http = require('http');
 const https= require('https');
 
 // 預讀證書
-const key  = fs.readFileSync('./certs/key.pem');
-const cert = fs.readFileSync('./certs/cert.pem');
+const key  = fs.readFileSync('./certs/lbtw.ca.starlbtwsys.20230719.20321231.key');
+const cert = fs.readFileSync('./certs/lbtw.ca.starlbtwsys.20230719.20321231.pem');
 
 // https.globalAgent.options.ca = fs.readFileSync('./certs/cert.pem');
 

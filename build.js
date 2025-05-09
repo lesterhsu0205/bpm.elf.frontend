@@ -10,7 +10,7 @@ const distPath = path.resolve(
 const standalonePath = path.resolve(__dirname, ".next/standalone");
 const staticPath = path.resolve(__dirname, ".next/static");
 const publicPath = path.resolve(__dirname, "public");
-const dockerComposeYml = path.resolve(__dirname, "docker-compose.yml");
+// const dockerComposeYml = path.resolve(__dirname, "docker-compose.yml");
 const patchHttpsJs = path.resolve(__dirname, "patch-https.js");
 const certPath = path.resolve(__dirname, "certs");
 const outputTar = path.resolve(__dirname, "dist/bpm.elf.frontend.tar.gz");
@@ -78,7 +78,7 @@ const main = async () => {
     copyRecursiveSync(staticPath, path.join(distPath, ".next/static"));
     copyRecursiveSync(publicPath, path.join(distPath, "public"));
     copyRecursiveSync(certPath, path.join(distPath, "certs"));
-    copyRecursiveSync(dockerComposeYml, path.join(distPath, "bin"));
+    // copyRecursiveSync(dockerComposeYml, path.join(distPath, "bin"));
     copyRecursiveSync(patchHttpsJs, distPath);
 
     compressToTar(distPath, outputTar);
