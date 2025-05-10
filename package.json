@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "local": "cross-env NODE_EXTRA_CA_CERTS=certs/ca.crt next dev",
-    "build:dev": "dotenv -e .env.dev -- next build && node build.js",
-    "build:stg": "dotenv -e .env.stg -- next build && node build.js",
-    "build:uat": "dotenv -e .env.uat -- next build && node build.js",
-    "build:prod": "dotenv -e .env.prod -- next build && node build.js",
+    "build:dev.local": "cross-env dotenv -e .env.dev.local -- next build && node build.js",
+    "build:dev": "cross-env dotenv -e .env.dev -- next build && node build.js",
+    "build:stg": "cross-env dotenv -e .env.stg -- next build && node build.js",
+    "build:uat": "cross-env dotenv -e .env.uat -- next build && node build.js",
+    "build:prod": "cross-env dotenv -e .env.prod -- next build && node build.js",
     "start": "cross-env NODE_EXTRA_CA_CERTS=certs/ca.crt node --require ./dist/opt/sw/bpm.elf.frontend/{host}-01/nodejs/patch-https.js dist/opt/sw/bpm.elf.frontend/{host}-01/nodejs/server.js",
-    "lint": "next lint"
+    "lint": "cross-env next lint"
   },
   "dependencies": {
     "@fontsource/inter": "^5.0.20",
