@@ -3,10 +3,7 @@ const path = require("path");
 const { exec } = require("child_process");
 const tar = require("tar");
 
-const distPath = path.resolve(
-  __dirname,
-  "dist/opt/sw/bpm-elf-frontend/{host}-01/nodejs"
-);
+const distPath = path.resolve(__dirname, "dist/bpm-elf-frontend");
 const standalonePath = path.resolve(__dirname, ".next/standalone");
 const staticPath = path.resolve(__dirname, ".next/static");
 const publicPath = path.resolve(__dirname, "public");
@@ -80,6 +77,18 @@ const main = async () => {
     copyRecursiveSync(certPath, path.join(distPath, "certs"));
     // copyRecursiveSync(dockerComposeYml, path.join(distPath, "bin"));
     copyRecursiveSync(patchHttpsJs, distPath);
+
+
+
+    // FIXME
+    fs.rmSync(
+      `${process.env.NEXT_PUBLIC_FED_DIST_GOLD_DIR_PREFIX}`,
+      { recursive: true, force: true }
+    );
+    copyRecursiveSync(
+      distPath,
+      `${process.env.NEXT_PUBLIC_FED_DIST_GOLD_DIR_PREFIX}/${process.env.NEXT_PUBLIC_TARGET_HOST}/nodejs`
+    );
 
     compressToTar(distPath, outputTar);
   } catch (error) {
