@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "local": "cross-env NODE_EXTRA_CA_CERTS=certs/lbtw.ca.starlbtwsys.20230719.20321231.crt next dev",
-    "build:dev.local": "cross-env dotenv -e .env.dev.local -- next build && DOTENV_CONFIG_PATH=.env.dev.local node -r dotenv/config build.js",
-    "build:dev": "cross-env dotenv -e .env.dev -- next build && DOTENV_CONFIG_PATH=.env.dev node -r dotenv/config build.js",
-    "build:stg": "cross-env dotenv -e .env.stg -- next build && DOTENV_CONFIG_PATH=.env.stg node -r dotenv/config build.js",
-    "build:uat": "cross-env dotenv -e .env.uat -- next build && DOTENV_CONFIG_PATH=.env.uat node -r dotenv/config build.js",
-    "build:prod": "cross-env dotenv -e .env.prod -- next build && DOTENV_CONFIG_PATH=.env.prod node -r dotenv/config build.js",
+    "build:dev.local": "cross-env dotenv -e .env.dev.local -- next build && cross-env DOTENV_CONFIG_PATH=.env.dev.local node -r dotenv/config build.js",
+    "build:dev": "cross-env dotenv -e .env.dev -- next build && cross-env DOTENV_CONFIG_PATH=.env.dev node -r dotenv/config build.js",
+    "build:stg": "cross-env dotenv -e .env.stg -- next build && cross-env DOTENV_CONFIG_PATH=.env.stg node -r dotenv/config build.js",
+    "build:uat": "cross-env dotenv -e .env.uat -- next build && cross-env DOTENV_CONFIG_PATH=.env.uat node -r dotenv/config build.js",
+    "build:prod": "cross-env dotenv -e .env.prod -- next build && cross-env DOTENV_CONFIG_PATH=.env.prod node -r dotenv/config build.js",
     "start": "cross-env NODE_EXTRA_CA_CERTS=dist/bpm-elf-frontend/certs/lbtw.ca.starlbtwsys.20230719.20321231.crt node --require ./dist/bpm-elf-frontend/patch-https.js dist/bpm-elf-frontend/server.js",
     "lint": "cross-env next lint"
   },
