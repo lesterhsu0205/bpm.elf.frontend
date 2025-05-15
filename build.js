@@ -1,15 +1,12 @@
 const fs = require("fs");
 const path = require("path");
-const { exec } = require("child_process");
 const tar = require("tar");
 
 const distPath = path.resolve(__dirname, "dist/bpm-elf-frontend");
 const standalonePath = path.resolve(__dirname, ".next/standalone");
 const staticPath = path.resolve(__dirname, ".next/static");
 const publicPath = path.resolve(__dirname, "public");
-// const dockerComposeYml = path.resolve(__dirname, "docker-compose.yml");
-const patchHttpsJs = path.resolve(__dirname, "patch-https.js");
-const certPath = path.resolve(__dirname, "certs");
+const dockerfile = path.resolve(__dirname, "Dockerfile");
 const outputTar = path.resolve(__dirname, "dist/bpm-elf-frontend.tar.gz");
 
 const mkdirRecursive = (dir) => {
@@ -74,20 +71,20 @@ const main = async () => {
     copyRecursiveSync(standalonePath, distPath);
     copyRecursiveSync(staticPath, path.join(distPath, ".next/static"));
     copyRecursiveSync(publicPath, path.join(distPath, "public"));
-    copyRecursiveSync(certPath, path.join(distPath, "certs"));
-    // copyRecursiveSync(dockerComposeYml, path.join(distPath, "bin"));
-    copyRecursiveSync(patchHttpsJs, distPath);
-
-
 
     // FIXME
-    fs.rmSync(
-      `${process.env.NEXT_PUBLIC_FED_DIST_GOLD_DIR_PREFIX}`,
-      { recursive: true, force: true }
-    );
+    fs.rmSync(`${process.env.NEXT_PUBLIC_FED_DIST_GOLD_DIR_PREFIX}`, {
+      recursive: true,
+      force: true,
+    });
     copyRecursiveSync(
       distPath,
-      `${process.env.NEXT_PUBLIC_FED_DIST_GOLD_DIR_PREFIX}/${process.env.NEXT_PUBLIC_TARGET_HOST}/nodejs`
+      `${process.env.NEXT_PUBLIC_FED_DIST_GOLD_DIR_PREFIX}/${process.env.NEXT_PUBLIC_TARGET_HOST}/app/dist`
+    );
+
+    copyRecursiveSync(
+      dockerfile,
+      `${process.env.NEXT_PUBLIC_FED_DIST_GOLD_DIR_PREFIX}/${process.env.NEXT_PUBLIC_TARGET_HOST}/app`
     );
 
     compressToTar(distPath, outputTar);
