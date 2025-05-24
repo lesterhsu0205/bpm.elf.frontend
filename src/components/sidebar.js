@@ -42,7 +42,7 @@ const Sidebar = () => {
   }, [sharedValue]);
 
   return (
-    <aside className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col">
+    <aside className="h-screen bg-white border-r border-gray-200 flex flex-col">
       {/* 導覽列表 */}
       <nav className="pt-10 flex-1 overflow-y-auto">
         <SidebarList items={data} />

@@ -8,6 +8,7 @@ import {
   HomeIcon,
   PresentationChartBarIcon,
   PencilSquareIcon,
+  ChevronRightIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import SidebarList from "@/components/sidebarList";
@@ -63,6 +64,7 @@ export default function SidebarItem({ item }) {
             {Icon && <Icon className="h-5 w-5 text-gray-500 mr-3" />}
             <span>{item.name}</span>
           </div>
+          <ChevronRightIcon className="h-5 w-5 text-gray-400 ml-3" />
         </button>
       </MenuHandler>
       <MenuList className="border border-gray-200 bg-white shadow-lg">
