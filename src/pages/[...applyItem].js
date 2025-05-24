@@ -15,7 +15,8 @@ export async function getServerSideProps({ params }) {
   const { applyItem } = params;
   console.info("applyItem: " + applyItem);
 
-  const data = await fetchData({ applyItem });
+  // FIXME: array index 應該以 sidebar 回傳 path array.length -1
+  const data = await fetchData({ applyItem: applyItem[applyItem.length - 1] });
 
   return {
     props: { data },
@@ -37,11 +38,11 @@ const fetchData = async ({ applyItem }) => {
     const pathArray = _.split(applyItem, "_");
 
     console.info(
-      `url: ${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/${pathArray[0]}.json`
+      `url: ${process.env.NEXT_PUBLIC_BACKEND_URL}/api/setting/${pathArray[0]}.json`
     );
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/${pathArray[0]}.json`
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/setting/${pathArray[0]}.json`
     );
 
     if (!response.ok) {

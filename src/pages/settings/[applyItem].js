@@ -107,7 +107,7 @@ const DynamicPage = ({ applyItem, data }) => {
 
   // FIXME: 處理 compose 單
   const deleteData = async () => {
-    const response = await fetch(`/bpm-elf/api/delete-setting/${applyItem}`, {
+    const response = await fetch(`/bpm-elf/api/setting/${applyItem}`, {
       method: "DELETE",
     });
 
@@ -127,7 +127,7 @@ const DynamicPage = ({ applyItem, data }) => {
 
     const fileName = applyItem === "new" ? `${newFileName}.json` : applyItem;
 
-    const response = await fetch(`/bpm-elf/api/write-setting/${fileName}`, {
+    const response = await fetch(`/bpm-elf/api/setting/${fileName}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -233,8 +233,8 @@ const fetchData = async ({ isClientCall }) => {
   try {
     const response = await fetch(
       isClientCall === true
-        ? "/bpm-elf/api/read-settings-raw"
-        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-settings-raw`
+        ? "/bpm-elf/api/settings-raw"
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings-raw`
     );
     if (!response.ok) {
       throw new Error("Network response was not ok");

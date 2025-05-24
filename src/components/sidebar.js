@@ -34,27 +34,21 @@ import _ from "lodash";
 import { toast } from "react-toastify";
 import { useSharedContext } from "@/sharedContext";
 
+import SidebarList from "@/components/sidebarList";
+
 const Sidebar = () => {
   const [data, setData] = useState([]);
-  const [accordionState, setAccordionState] = useState([]);
-
-  const toggleAccordion = (index) => {
-    setAccordionState((preState) => {
-      const newState = [...preState];
-      newState[index] = !newState[index];
-      return newState;
-    });
-  };
 
   const { sharedValue } = useSharedContext();
+
+  // 本層級唯一的開合狀態，用項目索引管理
+  const [openId, setOpenId] = useState(null); // 同層打開即關閉其他
 
   useEffect(() => {
     console.info("sidebar useEffect");
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `/bpm-elf/api/read-settings`
-        );
+        const response = await fetch(`/bpm-elf/api/sidebar`);
 
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -63,7 +57,6 @@ const Sidebar = () => {
         const result = await response.json();
 
         setData(result);
-        setAccordionState(new Array(result.length).fill(false));
       } catch (error) {
         toast.error(`Fetch error: ${error.message}`);
       }
@@ -84,28 +77,10 @@ const Sidebar = () => {
           </ListItem>
         </Link>
 
-        {data.map((setting, index) => {
-          let href = `/${_.replace(setting.file, ".json", "")}`;
-
-          if (setting.isCompose === true) {
-            href = `/compose${href}`
-          }
-
-          return (
-            <Link key={`${setting.file}_${index}`} href={href}>
-              {/* 透過傳參數去配對 json file 會顯示在 url 上，所以 json 命名應與 path name 一樣，如 /test -> test.json */}
-              {/* href={{ pathname: "/test", param: { gg: "onboard" } }} */}
-              <ListItem>
-                <ListItemPrefix>
-                  <TicketIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                {setting.content.name}
-              </ListItem>
-            </Link>
-          );
-        })}
+        <SidebarList items={data} level={0} />
 
         <hr className="my-2 border-blue-gray" />
+
         <Link href="/settings">
           <ListItem>
             <ListItemPrefix>

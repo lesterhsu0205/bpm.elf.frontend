@@ -36,7 +36,7 @@ const fetchData = async ({ applyItem }) => {
     const pathArray = _.split(applyItem, "_");
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read-setting/compose/${pathArray[0]}.json`
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/setting/compose/${pathArray[0]}.json`
     );
     if (!response.ok) {
       throw new Error("Network response was not ok");
