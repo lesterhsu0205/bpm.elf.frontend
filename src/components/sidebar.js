@@ -1,34 +1,5 @@
 "use client";
 
-import {
-  Card,
-  Typography,
-  List,
-  ListItem,
-  ListItemPrefix,
-  ListItemSuffix,
-  Chip,
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
-} from "@material-tailwind/react";
-import {
-  QueueListIcon,
-  PencilSquareIcon,
-  TicketIcon,
-  RectangleStackIcon,
-  PresentationChartBarIcon,
-  AdjustmentsHorizontalIcon,
-  ArrowTurnDownRightIcon,
-  ShoppingBagIcon,
-  UserCircleIcon,
-  Cog6ToothIcon,
-  HomeIcon,
-  InboxIcon,
-  PowerIcon,
-} from "@heroicons/react/24/solid";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import _ from "lodash";
 import { toast } from "react-toastify";
@@ -40,9 +11,6 @@ const Sidebar = () => {
   const [data, setData] = useState([]);
 
   const { sharedValue } = useSharedContext();
-
-  // 本層級唯一的開合狀態，用項目索引管理
-  const [openId, setOpenId] = useState(null); // 同層打開即關閉其他
 
   useEffect(() => {
     console.info("sidebar useEffect");
@@ -56,7 +24,15 @@ const Sidebar = () => {
 
         const result = await response.json();
 
-        setData(result);
+        setData([
+          { name: "首頁", url: "/", icon: "home" },
+          ...result,
+          {
+            name: "設定",
+            url: "/settings",
+            icon: "pencilSquare",
+          },
+        ]);
       } catch (error) {
         toast.error(`Fetch error: ${error.message}`);
       }
@@ -66,31 +42,12 @@ const Sidebar = () => {
   }, [sharedValue]);
 
   return (
-    <Card className="shadow-xl h-full overflow-y-auto">
-      <List>
-        <Link href="/">
-          <ListItem>
-            <ListItemPrefix>
-              <HomeIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            首頁
-          </ListItem>
-        </Link>
-
-        <SidebarList items={data} level={0} />
-
-        <hr className="my-2 border-blue-gray" />
-
-        <Link href="/settings">
-          <ListItem>
-            <ListItemPrefix>
-              <PencilSquareIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            設定
-          </ListItem>
-        </Link>
-      </List>
-    </Card>
+    <aside className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col">
+      {/* 導覽列表 */}
+      <nav className="pt-10 flex-1 overflow-y-auto">
+        <SidebarList items={data} />
+      </nav>
+    </aside>
   );
 };
 

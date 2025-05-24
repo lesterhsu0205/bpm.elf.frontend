@@ -1,83 +1,74 @@
-// components/SidebarItem.jsx
+// components/SidebarItem.js
+"use client";
+
+import { useState } from "react";
+import { Menu, MenuHandler, MenuList } from "@material-tailwind/react";
 import {
-  List,
-  ListItem,
-  ListItemPrefix,
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
-  Typography,
-} from "@material-tailwind/react";
-import {
-  ChevronDownIcon,
   TicketIcon,
-  PresentationChartBarIcon,
   HomeIcon,
+  PresentationChartBarIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import SidebarList from "@/components/sidebarList";
 
-export default function SidebarItem({ item, level, isOpen, onToggle }) {
+const iconMap = {
+  ticket: TicketIcon,
+  home: HomeIcon,
+  chart: PresentationChartBarIcon,
+  pencilSquare: PencilSquareIcon,
+  home: HomeIcon,
+  // …你原本的 iconMap
+};
+
+export default function SidebarItem({ item }) {
   const hasChildren = Array.isArray(item.children) && item.children.length > 0;
-  const paddingLeft = `${level * 0.3}rem`; // 1.25rem = 20px
-
-  const iconMap = {
-    ticket: TicketIcon,
-    home: HomeIcon,
-    // ...
-  };
-
+  const [open, setOpen] = useState(false);
   const Icon = iconMap[item.icon];
 
+  // 共同的文字＋圖示排版 class
+  const baseClass = `
+    flex items-center justify-between
+    w-full text-left
+    px-4 py-2 rounded-md
+    text-gray-700 hover:bg-gray-100
+    focus:outline-none focus:ring-0
+    active:bg-transparent
+  `;
+
+  // **無子節點**：純連結
   if (!hasChildren) {
-    // 單一節點，直接用 ListItem + Link
     return (
-      <div style={{ paddingLeft }}>
-        <Link href={item.url || "/"}>
-          <ListItem>
-            {Icon && (
-              <ListItemPrefix>
-                <Icon className="h-5 w-5" />
-              </ListItemPrefix>
-            )}
-            {item.name}
-          </ListItem>
-        </Link>
-      </div>
+      <Link href={item.url || "#"} className={`${baseClass}`}>
+        <div className="flex items-center">
+          {Icon && <Icon className="h-5 w-5 text-gray-500 mr-3" />}
+          <span>{item.name}</span>
+        </div>
+      </Link>
     );
   }
 
-  // 含子項目：用 Accordion 包裹，遞迴渲染 children
+  // **有子節點**：滑鼠懸停或點擊自動在右側展開
   return (
-    <div style={{ paddingLeft }}>
-      <Accordion
-        open={isOpen}
-        icon={
-          <ChevronDownIcon
-            strokeWidth={2.5}
-            className={`mx-auto h-4 w-4 transition-transform ${
-              isOpen ? "" : "rotate-90"
-            }`}
-          />
-        }
-      >
-        <ListItem className="p-0" selected={isOpen}>
-          <AccordionHeader onClick={onToggle} className="border-b-0 p-3">
-            {Icon && (
-              <ListItemPrefix>
-                <Icon className="h-5 w-5" />
-              </ListItemPrefix>
-            )}
-            <Typography color="blue-gray" className="mr-auto font-normal">
-              {item.name}
-            </Typography>
-          </AccordionHeader>
-        </ListItem>
-        <AccordionBody className="py-1">
-          {/* 遞迴至下一層清單 */}
-          <SidebarList items={item.children} level={level + 1} />
-        </AccordionBody>
-      </Accordion>
-    </div>
+    <Menu
+      placement="right-start"
+      allowHover
+      open={open}
+      handler={setOpen}
+      offset={4}
+    >
+      <MenuHandler>
+        <button className={`${baseClass}`} type="button">
+          <div className="flex items-center">
+            {Icon && <Icon className="h-5 w-5 text-gray-500 mr-3" />}
+            <span>{item.name}</span>
+          </div>
+        </button>
+      </MenuHandler>
+      <MenuList className="border border-gray-200 bg-white shadow-lg">
+        {/* 遞迴渲染下一層 */}
+        <SidebarList items={item.children} />
+      </MenuList>
+    </Menu>
   );
 }
