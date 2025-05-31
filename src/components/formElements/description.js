@@ -45,9 +45,9 @@ const Description = ({ label, idKey }) => {
     }
   }, [watchedCopyText]);
 
-  const apply = () => {
-    toast.success("已完成開單，單號: 2024-07-19 ITREQ-022");
-  };
+  // const apply = () => {
+  //   toast.success("已完成開單，單號: 2024-07-19 ITREQ-022");
+  // };
 
   const clear = () => {
     setValue(idKey, "" );
@@ -66,9 +66,9 @@ const Description = ({ label, idKey }) => {
           <Button variant="outline-secondary" className="me-2" ref={copyBtnRef}>
             <DocumentDuplicateIcon className="h-5 w-5" />
           </Button>
-          <Button variant="outline-secondary" onClick={apply}>
+          {/* <Button variant="outline-secondary" onClick={apply}>
             <ArrowUpOnSquareIcon className="h-5 w-5" />
-          </Button>
+          </Button> */}
         </div>
       </Card.Header>
 

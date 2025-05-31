@@ -35,14 +35,14 @@ const fetchData = async ({ applyItem }) => {
 
   try {
     // applyItem 如果是給子單.json 就要切成父 json 拿資料, /on-board_applyDevice.json => /on-board.json
-    const pathArray = _.split(applyItem, "_");
+    // const pathArray = _.split(applyItem, "_");
 
     console.info(
-      `url: ${process.env.NEXT_PUBLIC_BACKEND_URL}/api/setting/${pathArray[0]}.json`
+      `url: ${process.env.NEXT_PUBLIC_BACKEND_URL}/api/setting/${applyItem}.json`
     );
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/setting/${pathArray[0]}.json`
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/setting/${applyItem}.json`
     );
 
     if (!response.ok) {
@@ -50,16 +50,17 @@ const fetchData = async ({ applyItem }) => {
     }
 
     let jsonData = await response.json();
+    console.info("jsonData:" + JSON.stringify(jsonData));
 
     // FIXME: compose 單內的子單必須重組 json (基本資料+子單)
-    if (pathArray.length > 1) {
-      jsonData = {
-        name: pathArray[1],
-        tickets: jsonData.tickets.filter((item) =>
-          ["基本資料", pathArray[1]].includes(item.name)
-        ),
-      };
-    } else {
+    // if (pathArray.length > 1) {
+    //   jsonData = {
+    //     name: pathArray[1],
+    //     tickets: jsonData.tickets.filter((item) =>
+    //       ["基本資料", pathArray[1]].includes(item.name)
+    //     ),
+    //   };
+    // } else {
       // 一般子單需用 tickets 包 for 前端頁面
       if (!jsonData.tickets) {
         jsonData = {
@@ -67,9 +68,9 @@ const fetchData = async ({ applyItem }) => {
           tickets: [jsonData],
         };
       }
-    }
+    // }
 
-    console.info(jsonData);
+    console.info(JSON.stringify(jsonData));
     console.info("fetch data done");
 
     return jsonData;

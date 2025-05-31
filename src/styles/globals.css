@@ -90,4 +90,12 @@ body {
   button.bs-info {
     background-color: var(--bs-info);
   }
+
+  /* for material tailwind dialog use */
+  .grid.place-items-center.fixed.w-screen.h-screen.bg-black {
+    /* 半透明 60% 黑 */
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    /* 同時加點模糊 */
+    /* backdrop-filter: blur(4px) !important; */
+  }
 }

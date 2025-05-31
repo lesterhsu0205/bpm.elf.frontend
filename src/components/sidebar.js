@@ -25,10 +25,10 @@ const Sidebar = () => {
         const result = await response.json();
 
         setData([
-          { name: "首頁", url: "/", icon: "home" },
+          { name: "ReleaseNote", url: "/", icon: "home" },
           ...result,
           {
-            name: "設定",
+            name: "建立模板",
             url: "/settings",
             icon: "pencilSquare",
           },
