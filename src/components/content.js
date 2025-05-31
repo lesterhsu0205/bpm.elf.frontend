@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Form, Row, Button, Stack, Card } from "react-bootstrap";
 import _ from "lodash";
@@ -29,6 +29,25 @@ function Content({ config }) {
 
   const [submitKey, setSubmitKey] = useState(null);
 
+  // 如果 config 內容很重，就用 useMemo 只在 config 改變時才重新計算
+  const processedData = useMemo(() => {
+    if (!config) return null;
+
+    // component 只吃有 tickets 欄位的 compose 單, single 單需先轉換為 component 單格式
+    if (!config.tickets) {
+      return {
+        name: config.name,
+        tickets: [config],
+      };
+    }
+
+    return config;
+  }, [config]);
+
+  if (!processedData) {
+    return <div>Loading…</div>;
+  }
+
   // Watch all form fields for validate
   watch();
 
@@ -51,17 +70,17 @@ function Content({ config }) {
 
   const submit = (data) => {
     try {
-      for (let i = 0; i < config.tickets.length; i++) {
-        for (let j = 0; j < config.tickets[i].inputs.length; j++) {
+      for (let i = 0; i < processedData.tickets.length; i++) {
+        for (let j = 0; j < processedData.tickets[i].inputs.length; j++) {
           if (
-            config.tickets[i].inputs[j].key === submitKey &&
-            config.tickets[i].inputs[j].type === "description"
+            processedData.tickets[i].inputs[j].key === submitKey &&
+            processedData.tickets[i].inputs[j].type === "description"
           ) {
-            const compiled = _.template(config.tickets[i].inputs[j].template);
+            const compiled = _.template(processedData.tickets[i].inputs[j].template);
 
             setValue(
-              config.tickets[i].inputs[j].key,
-              compiled(processData(config.tickets[i].inputs[j].template, data))
+              processedData.tickets[i].inputs[j].key,
+              compiled(processData(processedData.tickets[i].inputs[j].template, data))
             );
           }
         }
@@ -105,10 +124,10 @@ function Content({ config }) {
       formState={formState}
     >
       <Form noValidate onSubmit={handleSubmit(submit)}>
-        {config &&
-          config.tickets &&
-          config.tickets.length > 0 &&
-          config.tickets
+        {processedData &&
+          processedData.tickets &&
+          processedData.tickets.length > 0 &&
+          processedData.tickets
             .filter((ticket) => ticket.inputs)
             .map((ticket) => {
               const groupColumns = getGroupColumns(ticket.inputs);
