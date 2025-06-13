@@ -1,7 +1,7 @@
 // components/Layout.js
 import Head from "next/head";
 // import { Inter } from "next/font/google";
-import "@fontsource/inter"; // Default weight 400
+// import "@fontsource/inter"; // Default weight 400
 
 import { Container, Row, Col } from "react-bootstrap";
 

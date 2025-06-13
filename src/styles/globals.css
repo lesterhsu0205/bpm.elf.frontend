@@ -3,18 +3,35 @@
   height: 100vh;
 }
 
+/* default weight 400  */
+@import '@fontsource/noto-sans-tc';
+@import '@fontsource/noto-sans-tc/300.css';
+@import '@fontsource/noto-sans-tc/500.css';
+@import '@fontsource/noto-sans-tc/600.css';
+@import '@fontsource/noto-sans-tc/700.css';
+@import '@fontsource/noto-sans-tc/800.css';
+@import '@fontsource/noto-sans-tc/900.css';
+
+@font-face {
+  font-family: 'jf open 粉圓';
+  src: url('/bpm-elf/fonts/jf-openhuninn-2.1.ttf') format('truetype');
+  font-display: swap;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
   overflow: hidden;
   /* font-family: "Inter", sans-serif; */
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  /* font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif; */
+  font-family: 'jf open 粉圓', 'Noto Sans TC', 'Noto Sans', 'sans-serif';
 }
 
 .header-custom {
-  padding-left: 30px; /* Adjust this value to align with sidebar padding */
+  padding-left: 30px;
+  /* Adjust this value to align with sidebar padding */
 }
 
 .my-flex {
@@ -44,10 +61,10 @@ body {
 
 .footer {
   margin-top: auto;
-  width: calc(
-    100% - 250px
-  ); /* Width of the content area excluding the sidebar */
-  margin-left: 250px; /* Width of the fixed sidebar */
+  width: calc(100% - 250px);
+  /* Width of the content area excluding the sidebar */
+  margin-left: 250px;
+  /* Width of the fixed sidebar */
 }
 
 @tailwind base;
@@ -55,6 +72,7 @@ body {
 @tailwind utilities;
 
 @layer utilities {
+
   /* TODO: workaround */
   a.workaround {
     color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
