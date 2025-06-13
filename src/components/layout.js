@@ -1,15 +1,15 @@
 // components/Layout.js
-import Head from "next/head";
+import Head from 'next/head'
 // import { Inter } from "next/font/google";
 // import "@fontsource/inter"; // Default weight 400
 
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col } from 'react-bootstrap'
 
-import Header from "@/components/header";
-import Sidebar from "@/components/sidebar";
+import Header from '@/components/header.js'
+import Sidebar from '@/components/sidebar.js'
 // import Footer from "@/components/footer";
 
-import { ToastContainer } from "react-toastify";
+import { ToastContainer } from 'react-toastify'
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -47,6 +47,6 @@ const Layout = ({ children }) => (
     </Container> */}
     {/* <Footer /> */}
   </>
-);
+)
 
-export default Layout;
+export default Layout

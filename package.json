@@ -37,6 +37,7 @@
     "dotenv-cli": "^8.0.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
+    "@stylistic/eslint-plugin": "^4.4.1",
     "tar": "^7.4.3"
   }
 }
