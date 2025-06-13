@@ -33,14 +33,25 @@ export async function getServerSideProps({ params }) {
   const { applyItem } = params
   console.info('applyItem: ' + applyItem)
 
-  const data = await fetchData({ isClientCall: false })
+  try {
+    const data = await fetchData({ isClientCall: false })
 
-  return {
-    props: {
-      applyItem,
-      data,
-    },
-    // revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
+    return {
+      props: {
+        applyItem,
+        data,
+      },
+      // revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
+    }
+  }
+  catch (error) {
+    console.error('SSR fetch error:', error)
+    return {
+      props: {
+        applyItem,
+        data: null,
+      },
+    }
   }
 }
 
@@ -48,7 +59,7 @@ const DynamicPage = ({ applyItem, data }) => {
   console.info(`load /settings/${applyItem}`)
 
   const router = useRouter()
-  const [allJsonData, setAllJsonData] = useState(data)
+  const [allJsonData, setAllJsonData] = useState(data || [])
   const initJsonData = useMemo(
     () => ({
       name: '',

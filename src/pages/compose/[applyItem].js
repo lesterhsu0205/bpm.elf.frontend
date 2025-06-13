@@ -15,17 +15,30 @@ export async function getServerSideProps({ params }) {
   const { applyItem } = params
   console.info('applyItem: ' + applyItem)
 
-  const data = await fetchData({ applyItem })
+  try {
+    const data = await fetchData({ applyItem })
 
-  return {
-    props: { data },
-    // revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
+    return {
+      props: { data },
+      // revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
+    }
+  }
+  catch (error) {
+    console.error('SSR fetch error:', error)
+    return {
+      props: { data: null },
+    }
   }
 }
 
 const DynamicPage = ({ data }) => {
   // TODO: 這邊要檢查雜魚 path 就不給過
   console.info('load /compose/[applyItem].js')
+
+  if (!data) {
+    return <div>無法載入頁面資料</div>
+  }
+
   return <Content config={data} />
 }
 
@@ -42,7 +55,7 @@ const fetchData = async ({ applyItem }) => {
     )
 
     if (!response.ok) {
-      throw new Error('Network response was not ok')
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
 
     let jsonData = await response.json()
@@ -54,6 +67,7 @@ const fetchData = async ({ applyItem }) => {
   catch (error) {
     console.error('🔥 Fetch Error:', error)
     toast.error('Fetch error:', error.message)
+    throw error // 重新拋出錯誤以便上層處理
   }
 }
 
