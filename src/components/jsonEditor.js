@@ -1,19 +1,19 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
-const Placeholder = () => <div>Loading Editor...</div>;
+const Placeholder = () => <div>Loading Editor...</div>
 
 const JsonEditor = ({ data, setData, onUpdate }) => {
-  const [Editor, setEditor] = useState(() => Placeholder);
+  const [Editor, setEditor] = useState(() => Placeholder)
 
   useEffect(() => {
     async function loadLibrary() {
-      const mod = await import("json-edit-react");
-      setEditor(() => mod.JsonEditor);
+      const mod = await import('json-edit-react')
+      setEditor(() => mod.JsonEditor)
     }
-    loadLibrary();
-  }, []);
+    loadLibrary()
+  }, [])
 
   return (
     <Editor
@@ -25,7 +25,7 @@ const JsonEditor = ({ data, setData, onUpdate }) => {
       maxWidth="100%"
       onUpdate={onUpdate}
     />
-  );
-};
+  )
+}
 
-export default JsonEditor;
+export default JsonEditor

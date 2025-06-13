@@ -1,9 +1,9 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/router";
-import { useForm, FormProvider } from "react-hook-form";
-import { Form, Row, Col, Button, Modal } from "react-bootstrap";
+import { useState, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/router'
+import { useForm, FormProvider } from 'react-hook-form'
+import { Form, Row, Col, Button, Modal } from 'react-bootstrap'
 import {
   Select,
   Option,
@@ -11,16 +11,16 @@ import {
   DialogHeader,
   DialogBody,
   DialogFooter,
-} from "@material-tailwind/react";
+} from '@material-tailwind/react'
 
-import JsonEditor from "@/components/jsonEditor";
-import Text from "@/components/formElements/text";
-import { useSharedContext } from "@/sharedContext";
+import JsonEditor from '@/components/jsonEditor'
+import Text from '@/components/formElements/text'
+import { useSharedContext } from '@/sharedContext'
 
-import { toast } from "react-toastify";
-import _ from "lodash";
-import Content from "@/components/content";
-import downloadJson from "@/utils/downloadJson";
+import { toast } from 'react-toastify'
+import _ from 'lodash'
+import Content from '@/components/content'
+import downloadJson from '@/utils/downloadJson'
 
 // export async function getStaticPaths() {
 //   return {
@@ -30,10 +30,10 @@ import downloadJson from "@/utils/downloadJson";
 // }
 
 export async function getServerSideProps({ params }) {
-  const { applyItem } = params;
-  console.info("applyItem: " + applyItem);
+  const { applyItem } = params
+  console.info('applyItem: ' + applyItem)
 
-  const data = await fetchData({ isClientCall: false });
+  const data = await fetchData({ isClientCall: false })
 
   return {
     props: {
@@ -41,34 +41,34 @@ export async function getServerSideProps({ params }) {
       data,
     },
     // revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
-  };
+  }
 }
 
 const DynamicPage = ({ applyItem, data }) => {
-  console.info(`load /settings/${applyItem}`);
+  console.info(`load /settings/${applyItem}`)
 
-  const router = useRouter();
-  const [allJsonData, setAllJsonData] = useState(data);
+  const router = useRouter()
+  const [allJsonData, setAllJsonData] = useState(data)
   const initJsonData = useMemo(
     () => ({
-      name: "",
+      name: '',
       path: [],
       inputs: [],
     }),
     []
-  ); // 只有在組件初次渲染時才初始化
+  ) // 只有在組件初次渲染時才初始化
   const [jsonData, setJsonData] = useState(
-    applyItem === "new"
+    applyItem === 'new'
       ? initJsonData
-      : allJsonData.find((setting) => setting.file === applyItem)?.content
-  );
+      : allJsonData.find(setting => setting.file === applyItem)?.content
+  )
 
-  const [newFileName, setNewFileName] = useState("");
+  const [newFileName, setNewFileName] = useState('')
 
-  const { sharedValue, setSharedValue } = useSharedContext();
-  const [selected, setSelected] = useState(null);
+  const { sharedValue, setSharedValue } = useSharedContext()
+  const [selected, setSelected] = useState(null)
 
-  const [opened, setOpened] = useState(false);
+  const [opened, setOpened] = useState(false)
 
   const {
     register,
@@ -80,58 +80,59 @@ const DynamicPage = ({ applyItem, data }) => {
     control,
     formState,
   } = useForm({
-    mode: "all",
-  });
+    mode: 'all',
+  })
 
   // Watch all form fields for validate
   //   watch();
 
   useEffect(() => {
-    const isValidOption = allJsonData.some((opt) => opt.file === applyItem);
+    const isValidOption = allJsonData.some(opt => opt.file === applyItem)
 
-    setSelected(isValidOption === true ? applyItem : null);
+    setSelected(isValidOption === true ? applyItem : null)
 
     setJsonData(
-      applyItem === "new"
+      applyItem === 'new'
         ? initJsonData
-        : allJsonData.find((setting) => setting.file === applyItem)?.content
-    );
-  }, [applyItem, allJsonData, initJsonData]);
+        : allJsonData.find(setting => setting.file === applyItem)?.content
+    )
+  }, [applyItem, allJsonData, initJsonData])
 
   const submit = (data) => {
     try {
       // saveData({ newFileName: data.newFileName });
-      completeAndOpenPlayground({ newFileName: data.newFileName });
-    } catch (Error) {
-      toast.warn(Error.message);
+      completeAndOpenPlayground({ newFileName: data.newFileName })
     }
-  };
+    catch (Error) {
+      toast.warn(Error.message)
+    }
+  }
 
   const refreshSidebar = () => {
-    setSharedValue((prev) => !prev);
-  };
+    setSharedValue(prev => !prev)
+  }
 
   const newData = () => {
-    router.push("/settings/new");
-  };
+    router.push('/settings/new')
+  }
 
   // 當 JSON 編輯時，更新狀態
   const handleJsonUpdate = (updatedJson) => {
-    setJsonData(updatedJson.newData); // 儲存最新 JSON
-  };
+    setJsonData(updatedJson.newData) // 儲存最新 JSON
+  }
 
   // FIXME: 處理 compose 單
   const deleteData = async () => {
     const response = await fetch(`/bpm-elf/api/setting/${applyItem}`, {
-      method: "DELETE",
-    });
+      method: 'DELETE',
+    })
 
-    const result = await response.json();
-    refreshSidebar();
-    setAllJsonData(await fetchData({ isClientCall: true }));
-    router.replace("/settings/none");
-    toast.success(result.message);
-  };
+    const result = await response.json()
+    refreshSidebar()
+    setAllJsonData(await fetchData({ isClientCall: true }))
+    router.replace('/settings/none')
+    toast.success(result.message)
+  }
 
   // FIXME: 處理 compose 單
   // const saveData = async ({ newFileName }) => {
@@ -163,16 +164,16 @@ const DynamicPage = ({ applyItem, data }) => {
   // };
 
   const completeAndOpenPlayground = async ({ newFileName }) => {
-    if (applyItem === "new" && !newFileName) {
-      toast.warn("檔名不得為空");
-      return;
+    if (applyItem === 'new' && !newFileName) {
+      toast.warn('檔名不得為空')
+      return
     }
 
-    setNewFileName(`${newFileName}.json`);
+    setNewFileName(`${newFileName}.json`)
 
     // 開 model
-    setOpened(true);
-  };
+    setOpened(true)
+  }
 
   return (
     <>
@@ -190,28 +191,30 @@ const DynamicPage = ({ applyItem, data }) => {
             <Form noValidate onSubmit={handleSubmit(submit)}>
               <Row className="mb-3">
                 <Col>
-                  {applyItem === "new" ? (
-                    <Text
-                      label="設定檔名稱"
-                      idKey="newFileName"
-                      suffix=".json"
-                    />
-                  ) : (
-                    <Select
-                      variant="standard"
-                      label="設定檔"
-                      value={selected}
-                      onChange={(val) => {
-                        router.push(`/settings/${val}`);
-                      }}
-                    >
-                      {allJsonData.map((file, index) => (
-                        <Option key={index} value={file.file}>
-                          {`${file.content.name} (${file.file})`}
-                        </Option>
-                      ))}
-                    </Select>
-                  )}
+                  {applyItem === 'new'
+                    ? (
+                        <Text
+                          label="設定檔名稱"
+                          idKey="newFileName"
+                          suffix=".json"
+                        />
+                      )
+                    : (
+                        <Select
+                          variant="standard"
+                          label="設定檔"
+                          value={selected}
+                          onChange={(val) => {
+                            router.push(`/settings/${val}`)
+                          }}
+                        >
+                          {allJsonData.map((file, index) => (
+                            <Option key={index} value={file.file}>
+                              {`${file.content.name} (${file.file})`}
+                            </Option>
+                          ))}
+                        </Select>
+                      )}
                 </Col>
                 <Col></Col>
                 <Col className="d-flex justify-content-end">
@@ -219,11 +222,11 @@ const DynamicPage = ({ applyItem, data }) => {
                     variant="success"
                     className="bs-success me-2"
                     onClick={newData}
-                    disabled={applyItem === "new"}
+                    disabled={applyItem === 'new'}
                   >
                     New
                   </Button>
-                  {applyItem === "new" && (
+                  {applyItem === 'new' && (
                     <Button
                       variant="primary"
                       className="bs-primary me-2"
@@ -240,7 +243,7 @@ const DynamicPage = ({ applyItem, data }) => {
                 >
                   Delete
                 </Button> */}
-                  {applyItem === "new" && (
+                  {applyItem === 'new' && (
                     <Button
                       variant="secondary"
                       className="bs-secondary"
@@ -270,20 +273,22 @@ const DynamicPage = ({ applyItem, data }) => {
           <Modal.Title>{newFileName}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {jsonData ? (
-            <Content
-              config={
-                !jsonData.tickets
-                  ? {
-                      name: jsonData.name,
-                      tickets: [jsonData],
-                    }
-                  : jsonData
-              }
-            />
-          ) : (
-            <div>Loading...</div>
-          )}
+          {jsonData
+            ? (
+                <Content
+                  config={
+                    !jsonData.tickets
+                      ? {
+                          name: jsonData.name,
+                          tickets: [jsonData],
+                        }
+                      : jsonData
+                  }
+                />
+              )
+            : (
+                <div>Loading...</div>
+              )}
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -334,29 +339,30 @@ const DynamicPage = ({ applyItem, data }) => {
         </DialogFooter>
       </Dialog> */}
     </>
-  );
-};
+  )
+}
 
 const fetchData = async ({ isClientCall }) => {
-  console.info("fetch data");
+  console.info('fetch data')
 
   try {
     const response = await fetch(
       isClientCall === true
-        ? "/bpm-elf/api/settings-raw"
+        ? '/bpm-elf/api/settings-raw'
         : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings-raw`
-    );
+    )
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      throw new Error('Network response was not ok')
     }
 
-    const resp = await response.json();
+    const resp = await response.json()
 
-    return resp;
-  } catch (error) {
-    console.error("🔥 Fetch Error:", error);
-    toast.error("Fetch error:", error.message);
+    return resp
   }
-};
+  catch (error) {
+    console.error('🔥 Fetch Error:', error)
+    toast.error('Fetch error:', error.message)
+  }
+}
 
-export default DynamicPage;
+export default DynamicPage

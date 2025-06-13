@@ -1,6 +1,6 @@
 // components/Header.js
-import { Navbar, Container, Nav } from "react-bootstrap";
-import Link from "next/link";
+import { Navbar, Container, Nav } from 'react-bootstrap'
+import Link from 'next/link'
 
 const Header = () => (
   <Navbar
@@ -23,6 +23,6 @@ const Header = () => (
       </Navbar.Collapse> */}
     </Container>
   </Navbar>
-);
+)
 
-export default Header;
+export default Header

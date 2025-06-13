@@ -8,8 +8,8 @@ import {
   Stack,
   Card,
   InputGroup,
-} from "react-bootstrap";
-import { useFormContext } from "react-hook-form";
+} from 'react-bootstrap'
+import { useFormContext } from 'react-hook-form'
 
 const Text = ({ label, idKey, readOnly, placeholder, disabled, suffix }) => {
   const {
@@ -17,7 +17,7 @@ const Text = ({ label, idKey, readOnly, placeholder, disabled, suffix }) => {
     reset,
     getValues,
     formState: { errors },
-  } = useFormContext({ mode: "all" });
+  } = useFormContext({ mode: 'all' })
 
   return (
     <InputGroup as={Col}>
@@ -31,7 +31,7 @@ const Text = ({ label, idKey, readOnly, placeholder, disabled, suffix }) => {
       />
       {suffix && <InputGroup.Text>{suffix}</InputGroup.Text>}
     </InputGroup>
-  );
-};
+  )
+}
 
-export default Text;
+export default Text

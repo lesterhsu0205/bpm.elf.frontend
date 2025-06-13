@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import Content from "@/components/content";
-import { toast } from "react-toastify";
-import _ from "lodash";
+import Content from '@/components/content'
+import { toast } from 'react-toastify'
+import _ from 'lodash'
 
 // export async function getStaticPaths() {
 //   return {
@@ -12,49 +12,50 @@ import _ from "lodash";
 // }
 
 export async function getServerSideProps({ params }) {
-  const { applyItem } = params;
-  console.info("applyItem: " + applyItem);
+  const { applyItem } = params
+  console.info('applyItem: ' + applyItem)
 
   // FIXME: array index 應該以 sidebar 回傳 path array.length -1
-  const data = await fetchData({ applyItem: applyItem[applyItem.length - 1] });
+  const data = await fetchData({ applyItem: applyItem[applyItem.length - 1] })
 
   return {
     props: { data },
     // revalidate: 1, // 若需要ISR，過期後新的 request 進來會撈新的資料，避免同一時刻過多使用者操作
-  };
+  }
 }
 
 const DynamicPage = ({ data }) => {
   // TODO: 這邊要檢查雜魚 path 就不給過
-  console.info("load [applyItem].js");
-  return <Content config={data} />;
-};
+  console.info('load [applyItem].js')
+  return <Content config={data} />
+}
 
 const fetchData = async ({ applyItem }) => {
-  console.info("fetch data");
+  console.info('fetch data')
 
   try {
     console.info(
       `url: ${process.env.NEXT_PUBLIC_BACKEND_URL}/api/setting/${applyItem}.json`
-    );
+    )
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/setting/${applyItem}.json`
-    );
+    )
 
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      throw new Error('Network response was not ok')
     }
 
-    let jsonData = await response.json();
-    console.info("jsonData:" + JSON.stringify(jsonData));
-    console.info("fetch data done");
+    let jsonData = await response.json()
+    console.info('jsonData:' + JSON.stringify(jsonData))
+    console.info('fetch data done')
 
-    return jsonData;
-  } catch (error) {
-    console.error("🔥 Fetch Error:", error);
-    toast.error("Fetch error:", error.message);
+    return jsonData
   }
-};
+  catch (error) {
+    console.error('🔥 Fetch Error:', error)
+    toast.error('Fetch error:', error.message)
+  }
+}
 
-export default DynamicPage;
+export default DynamicPage

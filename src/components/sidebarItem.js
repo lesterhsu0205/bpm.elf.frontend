@@ -1,17 +1,17 @@
 // components/SidebarItem.js
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Menu, MenuHandler, MenuList } from "@material-tailwind/react";
+import { useState } from 'react'
+import { Menu, MenuHandler, MenuList } from '@material-tailwind/react'
 import {
   TicketIcon,
   HomeIcon,
   PresentationChartBarIcon,
   PencilSquareIcon,
   ChevronRightIcon,
-} from "@heroicons/react/24/solid";
-import Link from "next/link";
-import SidebarList from "@/components/sidebarList";
+} from '@heroicons/react/24/solid'
+import Link from 'next/link'
+import SidebarList from '@/components/sidebarList'
 
 const iconMap = {
   ticket: TicketIcon,
@@ -20,12 +20,12 @@ const iconMap = {
   pencilSquare: PencilSquareIcon,
   home: HomeIcon,
   // …你原本的 iconMap
-};
+}
 
 export default function SidebarItem({ item }) {
-  const hasChildren = Array.isArray(item.children) && item.children.length > 0;
-  const [open, setOpen] = useState(false);
-  const Icon = iconMap[item.icon];
+  const hasChildren = Array.isArray(item.children) && item.children.length > 0
+  const [open, setOpen] = useState(false)
+  const Icon = iconMap[item.icon]
 
   // 共同的文字＋圖示排版 class
   const baseClass = `
@@ -35,18 +35,18 @@ export default function SidebarItem({ item }) {
     text-gray-700 hover:bg-gray-100
     focus:outline-none focus:ring-0
     active:bg-transparent
-  `;
+  `
 
   // **無子節點**：純連結
   if (!hasChildren) {
     return (
-      <Link href={item.url || "#"} className={`${baseClass}`}>
+      <Link href={item.url || '#'} className={`${baseClass}`}>
         <div className="flex items-center">
           {Icon && <Icon className="h-5 w-5 text-gray-500 mr-3" />}
           <span>{item.name}</span>
         </div>
       </Link>
-    );
+    )
   }
 
   // **有子節點**：滑鼠懸停或點擊自動在右側展開
@@ -72,5 +72,5 @@ export default function SidebarItem({ item }) {
         <SidebarList items={item.children} />
       </MenuList>
     </Menu>
-  );
+  )
 }

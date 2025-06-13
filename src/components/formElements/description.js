@@ -1,15 +1,15 @@
-"use client";
+'use client'
 
-import { useEffect, useRef } from "react";
-import { Form, Button, Card, InputGroup } from "react-bootstrap";
-import { useFormContext } from "react-hook-form";
-import ClipboardJS from "clipboard";
+import { useEffect, useRef } from 'react'
+import { Form, Button, Card, InputGroup } from 'react-bootstrap'
+import { useFormContext } from 'react-hook-form'
+import ClipboardJS from 'clipboard'
 import {
   ArrowUpOnSquareIcon,
   TrashIcon,
   DocumentDuplicateIcon,
-} from "@heroicons/react/24/outline";
-import { toast } from "react-toastify";
+} from '@heroicons/react/24/outline'
+import { toast } from 'react-toastify'
 
 const Description = ({ label, idKey }) => {
   const {
@@ -17,42 +17,42 @@ const Description = ({ label, idKey }) => {
     watch,
     setValue,
     formState: { errors },
-  } = useFormContext({ mode: "all" });
+  } = useFormContext({ mode: 'all' })
 
-  const copyBtnRef = useRef(null);
-  const watchedCopyText = watch(idKey);
+  const copyBtnRef = useRef(null)
+  const watchedCopyText = watch(idKey)
 
   useEffect(() => {
-    console.info("useEffect!!!!");
+    console.info('useEffect!!!!')
 
     if (watchedCopyText) {
       const clipboard = new ClipboardJS(copyBtnRef.current, {
         text: () => watchedCopyText,
-      });
+      })
 
-      clipboard.on("success", () => {
-        toast.success("Text copied to clipboard!");
-      });
+      clipboard.on('success', () => {
+        toast.success('Text copied to clipboard!')
+      })
 
-      clipboard.on("error", (e) => {
-        console.error("Failed to copy text: ", e);
-      });
+      clipboard.on('error', (e) => {
+        console.error('Failed to copy text: ', e)
+      })
 
       return () => {
-        console.info("clipboard.destroy()");
-        clipboard.destroy();
-      };
+        console.info('clipboard.destroy()')
+        clipboard.destroy()
+      }
     }
-  }, [watchedCopyText]);
+  }, [watchedCopyText])
 
   // const apply = () => {
   //   toast.success("已完成開單，單號: 2024-07-19 ITREQ-022");
   // };
 
   const clear = () => {
-    setValue(idKey, "" );
-    toast.success("欄位已清除");
-  };
+    setValue(idKey, '')
+    toast.success('欄位已清除')
+  }
 
   return (
     <Card>
@@ -83,7 +83,7 @@ const Description = ({ label, idKey }) => {
         </InputGroup>
       </Card.Body>
     </Card>
-  );
-};
+  )
+}
 
-export default Description;
+export default Description

@@ -8,8 +8,8 @@ import {
   Stack,
   Card,
   InputGroup,
-} from "react-bootstrap";
-import { useFormContext } from "react-hook-form";
+} from 'react-bootstrap'
+import { useFormContext } from 'react-hook-form'
 
 const TextArea = ({ label, idKey }) => {
   const {
@@ -17,14 +17,14 @@ const TextArea = ({ label, idKey }) => {
     reset,
     getValues,
     formState: { errors },
-  } = useFormContext({ mode: "all" });
+  } = useFormContext({ mode: 'all' })
 
   return (
     <InputGroup as={Col}>
       <InputGroup.Text>{label}</InputGroup.Text>
       <Form.Control as="textarea" rows="3" {...register(idKey)} />
     </InputGroup>
-  );
-};
+  )
+}
 
-export default TextArea;
+export default TextArea

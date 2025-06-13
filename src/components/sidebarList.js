@@ -1,11 +1,11 @@
 // components/SidebarList.js
-import React, { forwardRef } from "react";
-import SidebarItem from "@/components/sidebarItem";
+import React, { forwardRef } from 'react'
+import SidebarItem from '@/components/sidebarItem'
 
 const SidebarList = forwardRef(function SidebarList({ items }, ref) {
   return (
-    items &&
-    items.length > 0 && (
+    items
+    && items.length > 0 && (
       <ul ref={ref} className="space-y-1 focus:outline-none">
         {items.map((item, idx) => (
           <li key={idx}>
@@ -14,7 +14,7 @@ const SidebarList = forwardRef(function SidebarList({ items }, ref) {
         ))}
       </ul>
     )
-  );
-});
+  )
+})
 
-export default SidebarList;
+export default SidebarList
