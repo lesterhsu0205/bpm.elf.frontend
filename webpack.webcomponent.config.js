@@ -5,7 +5,7 @@ module.exports = {
   mode: 'production', // 'production', 'development', 'none'
   entry: './src/webComponent.js',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'public/js'),
     filename: 'elf-webcomponent.js',
     library: 'ELFWebComponent',
     libraryTarget: 'umd',
