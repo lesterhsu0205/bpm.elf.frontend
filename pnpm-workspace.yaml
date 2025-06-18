@@ -1,5 +1,2 @@
 onlyBuiltDependencies:
-  - '@module-federation/nextjs-mf'
-  - esbuild
-  - sharp
   - unrs-resolver

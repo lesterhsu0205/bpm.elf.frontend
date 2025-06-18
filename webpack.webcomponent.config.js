@@ -23,7 +23,7 @@ module.exports = {
               ['@babel/preset-react', { runtime: 'automatic' }],
             ],
             plugins: [
-              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-transform-class-properties',
               // 移除 @babel/plugin-transform-runtime 以避免運行時依賴
             ],
           },
