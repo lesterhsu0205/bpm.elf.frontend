@@ -41,3 +41,6 @@ dist
 
 *.bak
 launch.json
+
+# web component
+public/js
