@@ -80,6 +80,8 @@ const DynamicPage = ({ applyItem, data }) => {
   const [selected, setSelected] = useState(null)
 
   const [opened, setOpened] = useState(false)
+  const [prerenderedData, setPrerenderedData] = useState(null)
+  const [isLoadingPrerender, setIsLoadingPrerender] = useState(false)
 
   const {
     register,
@@ -182,8 +184,32 @@ const DynamicPage = ({ applyItem, data }) => {
 
     setNewFileName(`${newFileName}.json`)
 
-    // 開 model
-    setOpened(true)
+    // 先處理資料
+    setIsLoadingPrerender(true)
+    try {
+      const response = await fetch(`/bpm-elf/api/prerenderData`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({newFileName,jsonData}),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      const processedData = await response.json()
+      setPrerenderedData(processedData)
+      
+      // 開 modal
+      setOpened(true)
+    } catch (error) {
+      console.error('預處理資料失敗:', error)
+      toast.error(`預處理資料失敗: ${error.message}`)
+    } finally {
+      setIsLoadingPrerender(false)
+    }
   }
 
   return (
@@ -275,7 +301,10 @@ const DynamicPage = ({ applyItem, data }) => {
 
       <Modal
         show={opened === true}
-        onHide={() => setOpened(false)}
+        onHide={() => {
+          setOpened(false)
+          setPrerenderedData(null)
+        }}
         size="xl"
         centered
         scrollable
@@ -284,35 +313,34 @@ const DynamicPage = ({ applyItem, data }) => {
           <Modal.Title>{newFileName}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {jsonData
-            ? (
-                <Content
-                  config={
-                    !jsonData.tickets
-                      ? {
-                          name: jsonData.name,
-                          tickets: [jsonData],
-                        }
-                      : jsonData
-                  }
-                />
-              )
-            : (
-                <div>Loading...</div>
-              )}
+          {isLoadingPrerender ? (
+            <div className="text-center p-5">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">處理中...</span>
+              </div>
+              <div className="mt-3">正在處理資料...</div>
+            </div>
+          ) : prerenderedData ? (
+            <Content config={prerenderedData} />
+          ) : (
+            <div className="text-center p-5">無法載入資料</div>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button
             variant="secondary"
             className="bs-secondary me-2"
-            onClick={() => setOpened(false)}
+            onClick={() => {
+              setOpened(false)
+              setPrerenderedData(null)
+            }}
           >
             Cancel
           </Button>
           <Button
             variant="primary"
             className="bs-success"
-            onClick={() => downloadJson(jsonData, newFileName)}
+            onClick={() => downloadJson(prerenderedData || jsonData, newFileName)}
           >
             Confirm & Download
           </Button>
