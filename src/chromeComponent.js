@@ -23,8 +23,11 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
   const [globalLoading, setGlobalLoading] = useState(false)
   const [globalError, setGlobalError] = useState(null)
 
+  // 儲存每個頁面的 Content 組件 ref
+  const contentRefs = useRef({})
+
   // 載入特定 applyitem 的數據
-  const loadApplyItemData = async (targetApplyItem, itemName = null, isReload = false) => {
+  const loadApplyItemData = async (targetApplyItem, itemName = null, isReload = false, isCompose = false) => {
     if (!targetApplyItem || typeof targetApplyItem !== 'string' || !targetApplyItem.trim()) {
       setGlobalError(`缺少有效的 applyitem 參數，當前值: ${targetApplyItem}`)
       return
@@ -52,9 +55,15 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
         throw new Error('無效的 applyitem 路徑')
       }
 
-      console.info(`🚀 載入新數據: ${backendurl}/api/setting/${targetItem}.json`)
+      let targetPath
+      if (isCompose === true) {
+        targetPath = `${backendurl}/api/setting/compose/${targetItem}.json`
+      } else {
+        targetPath = `${backendurl}/api/setting/${targetItem}.json`
+      }
 
-      const response = await fetch(`${backendurl}/api/setting/${targetItem}.json`)
+      console.info(`🚀 載入新數據: ${targetPath}`)
+      const response = await fetch(targetPath)
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
@@ -67,6 +76,7 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
       setPagesData(prev => ({
         ...prev,
         [cleanApplyItem]: {
+          isCompose,
           data: jsonData,
           name: itemName || cleanApplyItem // 顯示名稱
         }
@@ -74,6 +84,14 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
       
       // 設置為當前頁面
       setCurrentApplyItem(cleanApplyItem)
+
+      // 如果是重新載入，清空當前頁面的表單
+      if (isReload && contentRefs.current[cleanApplyItem]) {
+        console.info('🧹 清空表單數據')
+        setTimeout(() => {
+          contentRefs.current[cleanApplyItem]?.reset()
+        }, 100) // 稍微延遲以確保組件已重新渲染
+      }
     }
     catch (err) {
       console.error('🔥 Fetch Error:', err)
@@ -87,7 +105,7 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
   }
 
   // 處理 mega menu 項目選擇
-  const handleMenuItemSelect = (selectedApplyItem, itemName = null) => {
+  const handleMenuItemSelect = (selectedApplyItem, itemName = null, isCompose = false) => {
     if (!selectedApplyItem || typeof selectedApplyItem !== 'string' || !selectedApplyItem.trim()) {
       setGlobalError('無效的項目選擇')
       return
@@ -95,7 +113,7 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
     
     const trimmedValue = selectedApplyItem.trim()
     console.info('🔤 從 mega menu 選擇 applyitem:', trimmedValue)
-    loadApplyItemData(trimmedValue, itemName)
+    loadApplyItemData(trimmedValue, itemName, false, isCompose)
   }
 
   // 極簡版本：直接渲染所有已載入的 Content 組件
@@ -112,7 +130,14 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
           }}
         >
           {/* Content 組件自己管理所有狀態，包括表單數據 */}
-          <Content config={pageData.data} />
+          <Content 
+            ref={(ref) => {
+              if (ref) {
+                contentRefs.current[applyItem] = ref
+              }
+            }}
+            config={pageData.data} 
+          />
         </div>
       )
     })
@@ -125,6 +150,10 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
         onItemSelect={handleMenuItemSelect}
         onManualInput={loadApplyItemData}
         backendurl={backendurl}
+        currentApplyItem={currentApplyItem}
+        currentItemName={pagesData[currentApplyItem]?.name}
+        currentIsCompose={pagesData[currentApplyItem]?.isCompose}
+        globalLoading={globalLoading}
       />
       
       {/* 全局錯誤顯示 */}
@@ -153,34 +182,32 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
           <div style={{ padding: '0 20px' }}>
             {/* 已載入頁面標籤 */}
             {Object.keys(pagesData).length > 1 && (
-              <div className="mb-2">
+              <div className="mb-2 d-flex align-items-center gap-2 flex-wrap">
                 <small className="text-muted">已載入頁面：</small>
-                <div className="d-flex flex-wrap gap-1 mt-1">
-                  {Object.keys(pagesData).map(item => (
-                    <button
-                      key={item}
-                      className={`btn btn-sm ${item === currentApplyItem ? 'btn-primary' : 'btn-outline-secondary'}`}
-                      onClick={() => setCurrentApplyItem(item)}
-                      disabled={item === currentApplyItem}
-                    >
-                      {pagesData[item]?.name || item}
-                    </button>
-                  ))}
-                </div>
+                {Object.keys(pagesData).map(item => (
+                  <button
+                    key={item}
+                    className={`btn btn-sm ${item === currentApplyItem ? 'btn-primary' : 'btn-outline-secondary'}`}
+                    onClick={() => setCurrentApplyItem(item)}
+                    disabled={item === currentApplyItem}
+                  >
+                    {pagesData[item]?.name || item}
+                  </button>
+                ))}
               </div>
             )}
             
             {/* 控制按鈕 */}
-            <div className="d-flex align-items-center gap-2 mb-3">
+            {/* <div className="d-flex align-items-center gap-2 mb-3">
               <button
                 type="button"
                 className="btn btn-outline-primary btn-sm"
-                onClick={() => loadApplyItemData(currentApplyItem, null, true)}
+                onClick={() => loadApplyItemData(currentApplyItem, pagesData[currentApplyItem]?.name, true, pagesData[currentApplyItem]?.isCompose)}
                 disabled={globalLoading}
               >🔄 重新載入
               </button>
-              <span className="badge bg-info">{currentApplyItem}</span>
-            </div>
+              <span className="badge bg-info">{currentApplyItem}.json</span>
+            </div> */}
           </div>
           
           {/* 所有頁面內容（用 CSS 控制顯示/隱藏）*/}

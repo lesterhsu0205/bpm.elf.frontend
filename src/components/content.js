@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, forwardRef, useImperativeHandle } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { Form, Row, Button, Stack, Card } from 'react-bootstrap'
 import _ from 'lodash'
@@ -13,7 +13,45 @@ import Radio from '@/components/formElements/radio'
 import Description from '@/components/formElements/description'
 import { toast } from 'react-toastify'
 
-function Content({ config }) {
+const Content = forwardRef(({ config }, ref) => {
+  // 計算並儲存預設值
+  const defaultValues = useMemo(() => {
+    if (!config) return {}
+    
+    const defaults = {}
+    
+    // 處理 config，如果沒有 tickets 則轉換為包含 tickets 的格式
+    const processedConfig = config.tickets ? config : {
+      name: config.name,
+      tickets: [config]
+    }
+    
+    processedConfig.tickets?.forEach(ticket => {
+      ticket.inputs?.forEach(input => {
+        if (input.type === 'select' && input.options && input.options.length > 0) {
+          // 尋找有 default: true 的選項，否則使用第一個選項
+          const defaultOption = input.options.find(option => option.default === true)
+          defaults[input.key] = defaultOption ? defaultOption.text : input.options[0].text
+        } else if (input.type === 'radio' && input.options && input.options.length > 0) {
+          // 尋找有 default: true 的選項，否則不設預設值
+          const defaultOption = input.options.find(option => option.default === true)
+          if (defaultOption) {
+            defaults[input.key] = defaultOption.text
+          }
+        } else if (input.type === 'checkbox' && input.options && input.options.length > 0) {
+          // checkbox 預設為空陣列，除非有 default: true 的選項
+          const defaultOptions = input.options.filter(option => option.default === true)
+          if (defaultOptions.length > 0) {
+            defaults[input.key] = defaultOptions.map(opt => opt.text)
+          }
+        }
+        // text 和 textarea 預設為空字串，不需要特別處理
+      })
+    })
+    
+    return defaults
+  }, [config])
+
   const {
     register,
     handleSubmit,
@@ -25,7 +63,22 @@ function Content({ config }) {
     formState,
   } = useForm({
     mode: 'all',
+    defaultValues,
   })
+
+  // 暴露 reset 方法給父組件
+  useImperativeHandle(ref, () => ({
+    reset: () => {
+      reset(defaultValues)
+    }
+  }))
+
+  // 當配置或預設值改變時，設定表單的初始值
+  React.useEffect(() => {
+    if (Object.keys(defaultValues).length > 0) {
+      reset(defaultValues)
+    }
+  }, [defaultValues, reset])
 
   const [submitKey, setSubmitKey] = useState(null)
 
@@ -236,6 +289,6 @@ function Content({ config }) {
       </Form>
     </FormProvider>
   )
-}
+})
 
 export default Content

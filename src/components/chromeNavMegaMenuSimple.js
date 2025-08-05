@@ -1,21 +1,8 @@
 // components/chromeNavMegaMenuSimple.js - 簡化版本，不依賴 Material Tailwind
 import React, { useState, useEffect } from 'react'
 import {
-  TicketIcon,
-  HomeIcon,
-  PresentationChartBarIcon,
-  PencilSquareIcon,
   ChevronDownIcon,
-  Bars3Icon,
-  XMarkIcon,
 } from '@heroicons/react/24/solid'
-
-const iconMap = {
-  ticket: TicketIcon,
-  home: HomeIcon,
-  chart: PresentationChartBarIcon,
-  pencilSquare: PencilSquareIcon,
-}
 
 
 
@@ -31,7 +18,6 @@ function AccordionMenuItems({ items, onItemClick, level = 0 }) {
   }
 
   return items.map((item, index) => {
-    const Icon = iconMap[item.icon]
     const hasChildren = Array.isArray(item.children) && item.children.length > 0
     const isExpanded = expandedIndex === index
 
@@ -44,9 +30,8 @@ function AccordionMenuItems({ items, onItemClick, level = 0 }) {
           onClick={() => onItemClick(item)}
           style={{ cursor: 'pointer' }}
         >
-          {Icon && <Icon className="text-primary" style={{ width: '20px', height: '20px' }} />}
           <div>
-            <div className="fw-bold small">{item.name}</div>
+            <div className="fw-bold small text-primary">{item.name}</div>
             {item.description && (
               <div className="text-muted" style={{ fontSize: '0.75rem' }}>
                 {item.description}
@@ -61,12 +46,11 @@ function AccordionMenuItems({ items, onItemClick, level = 0 }) {
     return (
       <div key={`${level}-${index}`}>
         <button
-          className="dropdown-item d-flex align-items-center justify-content-between gap-2 p-2 bg-light border-0"
+          className="dropdown-item d-flex align-items-center justify-content-between gap-2 p-2 bg-transparent border-0"
           onClick={() => handleToggle(index)}
           style={{ cursor: 'pointer', width: '100%' }}
         >
           <div className="d-flex align-items-center gap-2">
-            {Icon && <Icon className="text-secondary" style={{ width: '20px', height: '20px' }} />}
             <div className="fw-bold small text-secondary">{item.name}</div>
           </div>
           <ChevronDownIcon 
@@ -80,12 +64,20 @@ function AccordionMenuItems({ items, onItemClick, level = 0 }) {
           />
         </button>
         
-        {/* 手風琴式收折的子項目 */}
-        {isExpanded && (
-          <div style={{ paddingLeft: '1rem', borderLeft: '2px solid #e9ecef' }}>
-            <AccordionMenuItems items={item.children} onItemClick={onItemClick} level={level + 1} />
-          </div>
-        )}
+        {/* 手風琴式收折的子項目，添加動畫效果 */}
+        <div 
+          style={{ 
+            maxHeight: isExpanded ? '1000px' : '0',
+            overflow: 'hidden',
+            transition: 'max-height 0.5s ease-in-out, padding 0.5s ease-in-out',
+            paddingLeft: isExpanded ? '1rem' : '0',
+            borderLeft: isExpanded ? '2px solid #e9ecef' : 'none',
+            opacity: isExpanded ? 1 : 0,
+            transitionProperty: 'max-height, padding, opacity',
+          }}
+        >
+          <AccordionMenuItems items={item.children} onItemClick={onItemClick} level={level + 1} />
+        </div>
       </div>
     )
   })
@@ -97,7 +89,7 @@ function renderMenuItems(items, onItemClick, level = 0) {
 }
 
 // 主要的簡化 Mega Menu 組件
-export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, backendurl }) {
+export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, backendurl, currentApplyItem, currentItemName, currentIsCompose, globalLoading }) {
   const [navigationData, setNavigationData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -149,9 +141,14 @@ export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, b
       // 從 URL 中提取 applyitem
       const urlParts = item.url.split('/').filter(Boolean)
       const applyitem = urlParts[urlParts.length - 1]
-      
+      console.info('🔍 urlParts:', urlParts)
+      let isCompose = false
+      if (urlParts.length > 1 && urlParts[0] === 'compose') {
+        isCompose = true
+      }
+
       if (applyitem && onItemSelect) {
-        onItemSelect(applyitem, item.name) // 傳遞 item name
+        onItemSelect(applyitem, item.name, isCompose) // 傳遞 item name
       }
     }
   }
@@ -185,6 +182,21 @@ export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, b
           BPM ELF
         </span>
         
+        {/* 當前項目信息和重新載入按鈕 */}
+        {currentApplyItem && (
+          <div className="d-flex align-items-center gap-2 ms-auto me-3">
+            <span className="badge bg-info">{currentApplyItem}.json</span>
+            <button
+              type="button"
+              className="btn btn-outline-primary btn-sm"
+              onClick={() => onManualInput(currentApplyItem, currentItemName, true, currentIsCompose)}
+              disabled={globalLoading}
+            >
+              🔄 重新載入
+            </button>
+          </div>
+        )}
+        
         <div className="navbar-nav">
           <div className="nav-item dropdown">
             <button
@@ -209,8 +221,8 @@ export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, b
             <div 
               className={`dropdown-menu ${isMenuOpen ? 'show' : ''}`}
               style={{ 
-                minWidth: '300px',
-                maxHeight: '400px',
+                minWidth: '400px',
+                maxHeight: '500px',
                 overflowY: 'auto',
                 position: 'absolute',
                 top: '100%',
@@ -238,10 +250,10 @@ export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, b
                   {renderMenuItems(navigationData, handleItemClick)}
                   
                   {/* 分隔線 */}
-                  <hr className="my-2" />
+                  {/* <hr className="my-2" /> */}
                   
                   {/* 手動輸入區域 */}
-                  <div className="p-2 bg-light rounded">
+                  {/* <div className="p-2 bg-light rounded">
                     <div className="fw-bold small text-secondary mb-2">手動輸入 ApplyItem</div>
                     <div className="input-group input-group-sm">
                       <input
@@ -261,7 +273,7 @@ export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, b
                         載入
                       </button>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               )}
               
