@@ -4,11 +4,11 @@ const webpack = require('webpack')
 module.exports = {
   mode: 'production', // 'production', 'development', 'none'
   devtool: false,
-  entry: './src/webComponent.js',
+  entry: './src/chromeComponent.js',
   output: {
-    path: path.resolve(__dirname, 'public/js'),
-    filename: 'elf-webcomponent.js',
-    library: 'ELFWebComponent',
+    path: path.resolve(__dirname, 'chrome_extension'),
+    filename: 'elf-chrome-component.js',
+    library: 'ELFChromeComponent',
     libraryTarget: 'umd',
   },
   module: {
