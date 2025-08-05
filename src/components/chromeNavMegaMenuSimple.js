@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import {
   ChevronDownIcon,
+  ArrowPathIcon
 } from '@heroicons/react/24/solid'
 
 
@@ -188,11 +189,20 @@ export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, b
             <span className="badge bg-info">{currentApplyItem}.json</span>
             <button
               type="button"
-              className="btn btn-outline-primary btn-sm"
+              className="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
               onClick={() => onManualInput(currentApplyItem, currentItemName, true, currentIsCompose)}
               disabled={globalLoading}
+              title="重新載入"
             >
-              🔄 重新載入
+              <ArrowPathIcon 
+                className={`${globalLoading ? 'spinning' : ''}`}
+                style={{ 
+                  width: '14px', 
+                  height: '14px',
+                  transition: 'transform 0.2s ease-in-out'
+                }} 
+              />
+              重新載入
             </button>
           </div>
         )}

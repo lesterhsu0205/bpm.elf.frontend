@@ -3,8 +3,16 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>BPM 開單小幫手</title>
+    <title>BPM 開單小幫手 0.0.2</title>
     <style>
+
+        @font-face {
+            font-family: 'jf open 粉圓';
+            src: url('jf-openhuninn-2.1.ttf') format('truetype');
+            font-display: swap;
+        }
+
+
         /* 控制視窗的樣式 */
         html,
         body {
@@ -12,22 +20,16 @@
             height: 100vh;
             overflow: auto;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'jf open 粉圓', 'Noto Sans TC', 'Noto Sans', 'sans-serif';
         }
         
-        x-elf-wrapper-chrome {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
     </style>
 </head>
 
 <body>
     <!-- 用你定義好的 tag 名稱 -->
-    <x-elf-wrapper-chrome id="elf-chrome-component"></x-elf-wrapper-chrome>
-    <!-- 引入 ELF Web Component -->
+    <x-elf-wrapper-chrome />
+    <!-- 引入 ELF Chrome Component -->
     <script src="elf-chrome-component.js"></script>
 </body>
 

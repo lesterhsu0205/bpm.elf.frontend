@@ -31,7 +31,7 @@ const Description = ({ label, idKey }) => {
       })
 
       clipboard.on('success', () => {
-        toast.success('Text copied to clipboard!')
+        toast.success('需求說明已複製到剪貼簿')
       })
 
       clipboard.on('error', (e) => {
