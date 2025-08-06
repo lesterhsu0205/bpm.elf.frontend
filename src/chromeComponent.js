@@ -266,7 +266,7 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
                 color: '#7f8c8d'
               }}>
                 <p className="mb-3">
-                  專為 BPM 系統設計的智能助手<br/>
+                  專為 BPM 系統設計的小幫手<br/>
                   簡化繁瑣的開單填寫流程<br/>
                   讓您專注更重要的業務決策
                 </p>
