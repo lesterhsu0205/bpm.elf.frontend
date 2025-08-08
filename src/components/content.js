@@ -98,7 +98,7 @@ const Content = forwardRef(({ config }, ref) => {
   }, [config])
 
   if (!processedData) {
-    return <div>Loading…</div>
+    return <div>載入中...</div>
   }
 
   // Watch all form fields for validate

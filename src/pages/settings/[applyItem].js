@@ -261,7 +261,7 @@ const DynamicPage = ({ applyItem, data }) => {
                     onClick={newData}
                     disabled={applyItem === 'new'}
                   >
-                    New
+                    建立
                   </Button>
                   {applyItem === 'new' && (
                     <Button
@@ -269,7 +269,7 @@ const DynamicPage = ({ applyItem, data }) => {
                       className="bs-primary me-2"
                       type="submit"
                     >
-                      Complete
+                      完成
                     </Button>
                   )}
                   {/* <Button
@@ -286,7 +286,7 @@ const DynamicPage = ({ applyItem, data }) => {
                       className="bs-secondary"
                       onClick={() => router.back()}
                     >
-                      Cancel
+                      取消
                     </Button>
                   )}
                 </Col>
@@ -335,14 +335,14 @@ const DynamicPage = ({ applyItem, data }) => {
               setPrerenderedData(null)
             }}
           >
-            Cancel
+            取消
           </Button>
           <Button
             variant="primary"
             className="bs-success"
             onClick={() => downloadJson(prerenderedData || jsonData, newFileName)}
           >
-            Confirm & Download
+            確認下載
           </Button>
         </Modal.Footer>
       </Modal>
@@ -357,7 +357,7 @@ const DynamicPage = ({ applyItem, data }) => {
               }}
             />
           ) : (
-            <div>Loading...</div>
+            <div>載入中...</div>
           )}
         </DialogBody>
         <DialogFooter>
@@ -366,7 +366,7 @@ const DynamicPage = ({ applyItem, data }) => {
             className="bs-secondary me-2"
             onClick={() => setOpened(false)}
           >
-            Cancel
+            取消
           </Button>
           <Button
             variant="success"

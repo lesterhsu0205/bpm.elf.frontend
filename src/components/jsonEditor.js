@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-const Placeholder = () => <div>Loading Editor...</div>
+const Placeholder = () => <div>載入 JSON 編輯器...</div>
 
 const JsonEditor = ({ data, setData, onUpdate }) => {
   const [Editor, setEditor] = useState(() => Placeholder)
