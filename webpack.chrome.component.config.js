@@ -6,7 +6,7 @@ module.exports = {
   devtool: false,
   entry: './src/chromeComponent.js',
   output: {
-    path: path.resolve(__dirname, 'chrome_extension'),
+    path: path.resolve(__dirname, 'bpm_elf_extension'),
     filename: 'elf-chrome-component.js',
     library: 'ELFChromeComponent',
     libraryTarget: 'umd',
