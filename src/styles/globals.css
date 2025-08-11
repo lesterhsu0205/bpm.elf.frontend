@@ -41,9 +41,12 @@ body {
 }
 
 .content-container {
-  padding: 40px;
+  padding: 24px;
   overflow-y: auto;
-  flex-grow: 1;
+  flex: 1 1 0;
+  /* 更明確的 flex 屬性：grow shrink basis */
+  min-width: 0;
+  /* 允許內容收縮，防止溢出 */
 }
 
 .custom-textarea {
@@ -59,13 +62,19 @@ body {
   background-color: #fff;
 }
 
+/* 註解：未被使用的樣式 - .footer className 未在組件中使用 */
+/*
 .footer {
   margin-top: auto;
   width: calc(100% - 250px);
-  /* Width of the content area excluding the sidebar */
-  margin-left: 250px;
-  /* Width of the fixed sidebar */
+
+*/
+/* Width of the content area excluding the sidebar */
+/*margin-left: 250px;*/
+/* Width of the fixed sidebar */
+/*
 }
+*/
 
 @tailwind base;
 @tailwind components;
@@ -73,11 +82,34 @@ body {
 
 @layer utilities {
 
-  /* TODO: workaround */
+  /* 動態寬度 Sidebar */
+  .sidebar-dynamic-width {
+    min-width: 200px;
+    /* 最小寬度保證可讀性 */
+    width: fit-content;
+    /* 根據內容自動調整寬度 */
+    max-width: 300px;
+    /* 最大寬度避免過寬 */
+    flex: 0 0 auto;
+    /* 不伸縮，保持內容寬度 */
+  }
+
+  /* Sidebar 項目文字處理 */
+  .sidebar-item-text {
+    max-width: 250px;
+    /* 限制文字最大寬度 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* 註解：未被使用的樣式 - a.workaround 在代碼中未找到使用 */
+  /*
   a.workaround {
     color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
     text-decoration: underline !important;
   }
+  */
 
   /* 避免 bs button style 被蓋 */
   button.bs-secondary {
@@ -96,19 +128,22 @@ body {
     background-color: var(--bs-success);
   }
 
-  button.bs-primary {
-    background-color: var(--bs-primary);
-  }
-
   button.bs-info {
     background-color: var(--bs-info);
   }
 
-  /* for material tailwind dialog use */
+  /* 註解：未被使用的樣式 - for material tailwind dialog use 已移除，此樣式未再使用 */
+  /*
   .grid.place-items-center.fixed.w-screen.h-screen.bg-black {
-    /* 半透明 60% 黑 */
-    background-color: rgba(0, 0, 0, 0.6) !important;
-    /* 同時加點模糊 */
-    /* backdrop-filter: blur(4px) !important; */
-  }
+  */
+  /* 半透明 60% 黑 */
+  /*
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  */
+  /* 同時加點模糊 */
+  /* backdrop-filter: blur(4px) !important; */
+  /*
+}
+
+*/
 }

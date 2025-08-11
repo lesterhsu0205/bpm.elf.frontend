@@ -1,5 +1,21 @@
 /* Web Component 專用樣式 */
 
+/* 動態寬度 Sidebar */
+.sidebar-dynamic-width {
+  min-width: 200px; /* 最小寬度保證可讀性 */
+  width: fit-content; /* 根據內容自動調整寬度 */
+  max-width: 300px; /* 最大寬度避免過寬 */
+  flex: 0 0 auto; /* 不伸縮，保持內容寬度 */
+}
+
+/* Sidebar 項目文字處理 */
+.sidebar-item-text {
+  max-width: 250px; /* 限制文字最大寬度 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* 字體設定 */
 @font-face {
     font-family: 'jf open 粉圓';
@@ -82,6 +98,8 @@ button.bs-warning {
 }
 
 /* 移除導航選單按鈕的外框線 */
+/* 註解：未被使用的樣式 - nav-link.btn.btn-link 組合在當前代碼中未找到 */
+/*
 .nav-link.btn.btn-link {
     border: none !important;
     box-shadow: none !important;
@@ -95,6 +113,7 @@ button.bs-warning {
     box-shadow: none !important;
     outline: none !important;
 }
+*/
 
 /* 移除下拉選單的外框線 */
 .dropdown-menu {

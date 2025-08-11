@@ -240,6 +240,7 @@ const Content = forwardRef(({ config }, ref) => {
                                 label={input.label}
                                 idKey={input.key}
                                 options={input.options}
+                                ticketName={ticket.name}
                               />
                             )
                           }
@@ -250,6 +251,7 @@ const Content = forwardRef(({ config }, ref) => {
                                 label={input.label}
                                 idKey={input.key}
                                 options={input.options}
+                                ticketName={ticket.name}
                               />
                             )
                           }
