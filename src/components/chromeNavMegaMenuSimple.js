@@ -1,22 +1,106 @@
 // components/chromeNavMegaMenuSimple.js - 簡化版本，不依賴 Material Tailwind
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   ChevronDownIcon,
   ArrowPathIcon
 } from '@heroicons/react/24/solid'
 
+// 常數定義
+const LOGO_SIZE = { width: '32px', height: '32px' }
+const DROPDOWN_STYLES = {
+  minWidth: '400px',
+  maxHeight: '500px',
+  overflowY: 'auto',
+  position: 'absolute',
+  top: '100%',
+  right: '0',
+  zIndex: 1000
+}
+const ACCORDION_TRANSITION = {
+  maxHeight: { expanded: '1000px', collapsed: '0' },
+  transition: 'max-height 0.5s ease-in-out, padding 0.5s ease-in-out',
+  transitionProperty: 'max-height, padding, opacity'
+}
+const ICON_SIZE = { width: '16px', height: '16px' }
+const SMALL_ICON_SIZE = { width: '14px', height: '14px' }
 
+// 自定義 Hook：管理手風琴狀態
+const useAccordion = () => {
+  const [expandedIndex, setExpandedIndex] = useState(null)
+  
+  const toggleAccordion = useCallback((index) => {
+    setExpandedIndex(prevIndex => prevIndex === index ? null : index)
+  }, [])
+  
+  return { expandedIndex, toggleAccordion }
+}
+
+// 自定義 Hook：管理導航數據
+const useNavigationData = (backendurl) => {
+  const [navigationData, setNavigationData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  
+  useEffect(() => {
+    const fetchNavigationData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        // 使用與 sidebar 相同的 API 端點，但適配到 chrome component 的 backendurl
+        const apiUrl = backendurl 
+          ? `${backendurl}/api/sidebar` 
+          : `/bpm-elf/api/sidebar`
+        
+        const response = await fetch(apiUrl)
+
+        if (!response.ok) {
+          throw new Error('載入導航數據失敗')
+        }
+
+        const result = await response.json()
+        setNavigationData(result)
+      } catch (err) {
+        console.error('載入導航數據錯誤:', err)
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchNavigationData()
+  }, [backendurl])
+  
+  return { navigationData, loading, error }
+}
+
+// 自定義 Hook：管理菜單狀態
+const useMenuState = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [manualInputValue, setManualInputValue] = useState('')
+  
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(prev => !prev)
+  }, [])
+  
+  const closeMenu = useCallback(() => {
+    setIsMenuOpen(false)
+  }, [])
+  
+  return { 
+    isMenuOpen, 
+    manualInputValue, 
+    setManualInputValue,
+    toggleMenu, 
+    closeMenu 
+  }
+}
 
 // 手風琴式菜單項目組件
 function AccordionMenuItems({ items, onItemClick, level = 0 }) {
-  const [expandedIndex, setExpandedIndex] = useState(null)
+  const { expandedIndex, toggleAccordion } = useAccordion()
 
   if (!items || !Array.isArray(items)) return null
-
-  const handleToggle = (index) => {
-    // 如果點擊的是已展開的項目，則收折；否則展開該項目並收折其他項目
-    setExpandedIndex(expandedIndex === index ? null : index)
-  }
 
   return items.map((item, index) => {
     const hasChildren = Array.isArray(item.children) && item.children.length > 0
@@ -48,7 +132,7 @@ function AccordionMenuItems({ items, onItemClick, level = 0 }) {
       <div key={`${level}-${index}`}>
         <button
           className="dropdown-item d-flex align-items-center justify-content-between gap-2 p-2 bg-transparent border-0"
-          onClick={() => handleToggle(index)}
+          onClick={() => toggleAccordion(index)}
           style={{ cursor: 'pointer', width: '100%' }}
         >
           <div className="d-flex align-items-center gap-2">
@@ -56,8 +140,7 @@ function AccordionMenuItems({ items, onItemClick, level = 0 }) {
           </div>
           <ChevronDownIcon 
             style={{ 
-              width: '16px', 
-              height: '16px',
+              ...ICON_SIZE,
               transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
               transition: 'transform 0.2s ease'
             }} 
@@ -68,13 +151,13 @@ function AccordionMenuItems({ items, onItemClick, level = 0 }) {
         {/* 手風琴式收折的子項目，添加動畫效果 */}
         <div 
           style={{ 
-            maxHeight: isExpanded ? '1000px' : '0',
+            maxHeight: isExpanded ? ACCORDION_TRANSITION.maxHeight.expanded : ACCORDION_TRANSITION.maxHeight.collapsed,
             overflow: 'hidden',
-            transition: 'max-height 0.5s ease-in-out, padding 0.5s ease-in-out',
+            transition: ACCORDION_TRANSITION.transition,
             paddingLeft: isExpanded ? '1rem' : '0',
             borderLeft: isExpanded ? '2px solid #e9ecef' : 'none',
             opacity: isExpanded ? 1 : 0,
-            transitionProperty: 'max-height, padding, opacity',
+            transitionProperty: ACCORDION_TRANSITION.transitionProperty,
           }}
         >
           <AccordionMenuItems items={item.children} onItemClick={onItemClick} level={level + 1} />
@@ -85,91 +168,49 @@ function AccordionMenuItems({ items, onItemClick, level = 0 }) {
 }
 
 // 遞迴渲染菜單項目（保留原來的簡單版本作為備用）
-function renderMenuItems(items, onItemClick, level = 0) {
+const renderMenuItems = (items, onItemClick, level = 0) => {
   return <AccordionMenuItems items={items} onItemClick={onItemClick} level={level} />
 }
 
 // 主要的簡化 Mega Menu 組件
 export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, backendurl, currentApplyItem, currentItemName, currentIsCompose, globalLoading }) {
-  const [navigationData, setNavigationData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [manualInputValue, setManualInputValue] = useState('')
-
-  // 從 API 載入導航數據
-  useEffect(() => {
-    const fetchNavigationData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        // 使用與 sidebar 相同的 API 端點，但適配到 chrome component 的 backendurl
-        const apiUrl = backendurl 
-          ? `${backendurl}/api/sidebar` 
-          : `/bpm-elf/api/sidebar`
-        
-        const response = await fetch(apiUrl)
-
-        if (!response.ok) {
-          throw new Error('載入導航數據失敗')
-        }
-
-        const result = await response.json()
-
-        // 使用 API 回傳的原始數據，不添加額外項目
-        const combinedData = result
-
-        setNavigationData(combinedData)
-      } catch (err) {
-        console.error('載入導航數據錯誤:', err)
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchNavigationData()
-  }, [backendurl])
+  const { navigationData, loading, error } = useNavigationData(backendurl)
+  const { isMenuOpen, manualInputValue, setManualInputValue, toggleMenu, closeMenu } = useMenuState()
 
   // 處理項目選擇
-  const handleItemClick = (item) => {
+  const handleItemClick = useCallback((item) => {
     console.info('🔗 選擇導航項目:', item)
-    setIsMenuOpen(false)
+    closeMenu()
     
     // 提取 applyitem（如果 url 存在的話）
     if (item.url) {
-      // 從 URL 中提取 applyitem
       const urlParts = item.url.split('/').filter(Boolean)
       const applyitem = urlParts[urlParts.length - 1]
       console.info('🔍 urlParts:', urlParts)
-      let isCompose = false
-      if (urlParts.length > 1 && urlParts[0] === 'compose') {
-        isCompose = true
-      }
+      const isCompose = urlParts.length > 1 && urlParts[0] === 'compose'
 
       if (applyitem && onItemSelect) {
-        onItemSelect(applyitem, item.name, isCompose) // 傳遞 item name
+        onItemSelect(applyitem, item.name, isCompose)
       }
     }
-  }
+  }, [closeMenu, onItemSelect])
 
   // 處理手動輸入
-  const handleManualInputSubmit = () => {
+  const handleManualInputSubmit = useCallback(() => {
     if (!manualInputValue.trim()) return
     
-    setIsMenuOpen(false)
+    closeMenu()
     if (onManualInput) {
       onManualInput(manualInputValue.trim())
     }
     setManualInputValue('')
-  }
+  }, [manualInputValue, closeMenu, onManualInput, setManualInputValue])
 
-  const handleInputKeyPress = (e) => {
+  const handleInputKeyPress = useCallback((e) => {
     if (e.key === 'Enter') {
       handleManualInputSubmit()
     }
-  }
+  }, [handleManualInputSubmit])
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-3">
@@ -178,7 +219,7 @@ export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, b
           <img 
             src="magician-hat512.png"
             alt="BPM ELF Logo" 
-            style={{ width: '32px', height: '32px', marginRight: '8px' }}
+            style={{ ...LOGO_SIZE, marginRight: '8px' }}
           />
           BPM ELF
         </span>
@@ -197,8 +238,7 @@ export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, b
               <ArrowPathIcon 
                 className={`${globalLoading ? 'spinning' : ''}`}
                 style={{ 
-                  width: '14px', 
-                  height: '14px',
+                  ...SMALL_ICON_SIZE,
                   transition: 'transform 0.2s ease-in-out'
                 }} 
               />
@@ -211,15 +251,14 @@ export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, b
           <div className="nav-item dropdown">
             <button
               className="nav-link btn btn-link border-0 d-flex align-items-center"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={toggleMenu}
               aria-expanded={isMenuOpen}
               disabled={loading}
             >
               {loading ? '載入中...' : '導航選單'}
               <ChevronDownIcon 
                 style={{ 
-                  width: '16px', 
-                  height: '16px', 
+                  ...ICON_SIZE, 
                   marginLeft: '0.5rem',
                   transform: isMenuOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                   transition: 'transform 0.2s ease'
@@ -230,15 +269,7 @@ export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, b
             {/* Dropdown Menu */}
             <div 
               className={`dropdown-menu ${isMenuOpen ? 'show' : ''}`}
-              style={{ 
-                minWidth: '400px',
-                maxHeight: '500px',
-                overflowY: 'auto',
-                position: 'absolute',
-                top: '100%',
-                right: '0',
-                zIndex: 1000
-              }}
+              style={DROPDOWN_STYLES}
             >
               {loading && (
                 <div className="dropdown-item-text text-center p-3">
@@ -327,7 +358,7 @@ export default function ChromeNavMegaMenuSimple({ onItemSelect, onManualInput, b
         <div 
           className="position-fixed top-0 start-0 w-100 h-100"
           style={{ zIndex: 999 }}
-          onClick={() => setIsMenuOpen(false)}
+          onClick={closeMenu}
         />
       )}
     </nav>

@@ -12,6 +12,12 @@ import '@/styles/webcomponent.css'
 // 引入 ToastContainer 樣式
 import 'react-toastify/dist/ReactToastify.css'
 
+// 常數定義
+const FOOTER_HEIGHT = '40px'
+const MIN_HEIGHT = 'calc(100vh - 40px)'
+const FORM_RESET_DELAY = 100
+const LOGO_SIZE = { width: '48px', height: '48px' }
+
 // Chrome 組件
 const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_URL }) => {
   // 極簡模式 - 只保存配置數據和當前頁面
@@ -25,41 +31,59 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
   // 儲存每個頁面的 Content 組件 ref
   const contentRefs = useRef({})
 
+  // 輔助函數：驗證 applyitem 參數
+  const validateApplyItem = (targetApplyItem) => {
+    if (!targetApplyItem || typeof targetApplyItem !== 'string' || !targetApplyItem.trim()) {
+      throw new Error(`缺少有效的 applyitem 參數，當前值: ${targetApplyItem}`)
+    }
+    return targetApplyItem.trim()
+  }
+
+  // 輔助函數：解析 applyitem 路徑
+  const parseApplyItemPath = (cleanApplyItem) => {
+    const cleanPath = cleanApplyItem.split('/').filter(Boolean)
+    const targetItem = cleanPath[cleanPath.length - 1]
+    if (!targetItem) {
+      throw new Error('無效的 applyitem 路徑')
+    }
+    return targetItem
+  }
+
+  // 輔助函數：建構 API 路徑
+  const buildApiPath = (targetItem, isCompose) => {
+    return isCompose 
+      ? `${backendurl}/api/setting/compose/${targetItem}.json`
+      : `${backendurl}/api/setting/${targetItem}.json`
+  }
+
+  // 輔助函數：處理表單重設
+  const handleFormReset = (cleanApplyItem) => {
+    if (contentRefs.current[cleanApplyItem]) {
+      console.info('🧹 清空表單數據')
+      setTimeout(() => {
+        contentRefs.current[cleanApplyItem]?.reset()
+      }, FORM_RESET_DELAY)
+    }
+  }
+
   // 載入特定 applyitem 的數據
   const loadApplyItemData = async (targetApplyItem, itemName = null, isReload = false, isCompose = false) => {
-    if (!targetApplyItem || typeof targetApplyItem !== 'string' || !targetApplyItem.trim()) {
-      setGlobalError(`缺少有效的 applyitem 參數，當前值: ${targetApplyItem}`)
-      return
-    }
-
-    const cleanApplyItem = targetApplyItem.trim()
-    
-    // 如果已經載入過，直接切換，不重新載入
-    if (pagesData[cleanApplyItem] && !isReload) {
-      console.info('🔄 切換到已載入的頁面:', cleanApplyItem)
-      setCurrentApplyItem(cleanApplyItem)
-      setGlobalError(null)
-      return
-    }
-
     try {
+      const cleanApplyItem = validateApplyItem(targetApplyItem)
+      
+      // 如果已經載入過，直接切換，不重新載入
+      if (pagesData[cleanApplyItem] && !isReload) {
+        console.info('🔄 切換到已載入的頁面:', cleanApplyItem)
+        setCurrentApplyItem(cleanApplyItem)
+        setGlobalError(null)
+        return
+      }
+
       setGlobalLoading(true)
       setGlobalError(null)
 
-      // 處理 applyitem 路徑（可能是 /path/to/item 或 path/to/item）
-      const cleanPath = cleanApplyItem.split('/').filter(Boolean)
-      const targetItem = cleanPath[cleanPath.length - 1]
-
-      if (!targetItem) {
-        throw new Error('無效的 applyitem 路徑')
-      }
-
-      let targetPath
-      if (isCompose === true) {
-        targetPath = `${backendurl}/api/setting/compose/${targetItem}.json`
-      } else {
-        targetPath = `${backendurl}/api/setting/${targetItem}.json`
-      }
+      const targetItem = parseApplyItemPath(cleanApplyItem)
+      const targetPath = buildApiPath(targetItem, isCompose)
 
       console.info(`🚀 載入新數據: ${targetPath}`)
       const response = await fetch(targetPath)
@@ -85,48 +109,37 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
       setCurrentApplyItem(cleanApplyItem)
 
       // 如果是重新載入，清空當前頁面的表單
-      if (isReload && contentRefs.current[cleanApplyItem]) {
-        console.info('🧹 清空表單數據')
-        setTimeout(() => {
-          contentRefs.current[cleanApplyItem]?.reset()
-        }, 100) // 稍微延遲以確保組件已重新渲染
+      if (isReload) {
+        handleFormReset(cleanApplyItem)
       }
-    }
-    catch (err) {
+    } catch (err) {
       console.error('🔥 Fetch Error:', err)
       setGlobalError(`載入失敗: ${err.message}`)
-      
-      // 失敗時不保存到 pagesData，直接顯示全局錯誤
-    }
-    finally {
+    } finally {
       setGlobalLoading(false)
     }
   }
 
   // 處理 mega menu 項目選擇
   const handleMenuItemSelect = (selectedApplyItem, itemName = null, isCompose = false) => {
-    if (!selectedApplyItem || typeof selectedApplyItem !== 'string' || !selectedApplyItem.trim()) {
+    try {
+      const trimmedValue = validateApplyItem(selectedApplyItem)
+      console.info('🔤 從 mega menu 選擇 applyitem:', trimmedValue)
+      loadApplyItemData(trimmedValue, itemName, false, isCompose)
+    } catch (err) {
       setGlobalError('無效的項目選擇')
-      return
     }
-    
-    const trimmedValue = selectedApplyItem.trim()
-    console.info('🔤 從 mega menu 選擇 applyitem:', trimmedValue)
-    loadApplyItemData(trimmedValue, itemName, false, isCompose)
   }
 
   // 極簡版本：直接渲染所有已載入的 Content 組件
   const renderAllPagesContent = () => {
-    return Object.keys(pagesData).map(applyItem => {
-      const pageData = pagesData[applyItem]
+    return Object.entries(pagesData).map(([applyItem, pageData]) => {
       const isCurrentPage = applyItem === currentApplyItem
 
       return (
         <div 
           key={applyItem}
-          style={{ 
-            display: isCurrentPage ? 'block' : 'none'
-          }}
+          style={{ display: isCurrentPage ? 'block' : 'none' }}
         >
           {/* Content 組件自己管理所有狀態，包括表單數據 */}
           <Content 
@@ -145,7 +158,7 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
   return (
     <>
       {/* 主要內容容器 - 留出底部空間給固定 footer */}
-      <div style={{ paddingBottom: '40px', minHeight: 'calc(100vh - 40px)' }}>
+      <div style={{ paddingBottom: FOOTER_HEIGHT, minHeight: MIN_HEIGHT }}>
         {/* Mega Menu 導航 - 始終顯示 */}
         <ChromeNavMegaMenuSimple 
           onItemSelect={handleMenuItemSelect}
@@ -185,14 +198,14 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
             {Object.keys(pagesData).length > 1 && (
               <div className="mb-2 d-flex align-items-center gap-2 flex-wrap">
                 <small className="text-muted">已載入單據：</small>
-                {Object.keys(pagesData).map(item => (
+                {Object.entries(pagesData).map(([item, data]) => (
                   <button
                     key={item}
                     className={`btn btn-sm ${item === currentApplyItem ? 'btn-primary' : 'btn-outline-secondary'}`}
                     onClick={() => setCurrentApplyItem(item)}
                     disabled={item === currentApplyItem}
                   >
-                    {pagesData[item]?.name || item}
+                    {data?.name || item}
                   </button>
                 ))}
               </div>
@@ -237,8 +250,7 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
                 <img src="magician-hat512.png"
                   alt="BPM ELF Logo" 
                   style={{ 
-                    width: '48px', 
-                    height: '48px', 
+                    ...LOGO_SIZE, 
                     marginRight: '12px',
                     flexShrink: 0
                   }}
@@ -288,7 +300,7 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
                   快速切換已載入的單據
                 </h6>
                 <div className="d-flex flex-wrap gap-2 justify-content-center">
-                  {Object.keys(pagesData).map(item => (
+                  {Object.entries(pagesData).map(([item, data]) => (
                     <button
                       key={item}
                       className="btn btn-outline-primary btn-sm"
@@ -299,7 +311,7 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
                         fontWeight: '500'
                       }}
                     >
-                      {pagesData[item]?.name || item}
+                      {data?.name || item}
                     </button>
                   ))}
                 </div>
@@ -326,15 +338,9 @@ const ELFWrapperChrome = ({ backendurl = process.env.NEXT_PUBLIC_WEB_COMPONENT_U
           zIndex: 999
         }}
       >
-        <div>
-          <p className="mb-0" style={{ fontSize: '11px' }}>
-            ©
-            {' '}
-            {new Date().getFullYear()}
-            {' '}
-            LineBank BXI. All Rights Reserved.
-          </p>
-        </div>
+        <p className="mb-0" style={{ fontSize: '11px' }}>
+          © {new Date().getFullYear()} LineBank BXI. All Rights Reserved.
+        </p>
       </footer>
       
       {/* Toast Container */}
