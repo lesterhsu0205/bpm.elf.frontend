@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import { useSharedContext } from '@/sharedContext'
 
 import SidebarList from '@/components/sidebarList'
+import { MenuProvider } from '@/contexts/MenuContext'
 
 const Sidebar = () => {
   const [data, setData] = useState([])
@@ -43,12 +44,14 @@ const Sidebar = () => {
   }, [sharedValue])
 
   return (
-    <aside className="h-screen bg-white border-r border-gray-200 flex flex-col">
-      {/* 導覽列表 */}
-      <nav className="pt-10 flex-1 overflow-y-auto">
-        <SidebarList items={data} />
-      </nav>
-    </aside>
+    <MenuProvider>
+      <aside className="h-screen bg-white border-r border-gray-200 flex flex-col sidebar-dynamic-width">
+        {/* 導覽列表 */}
+        <nav className="pt-10 flex-1 overflow-y-auto">
+          <SidebarList items={data} />
+        </nav>
+      </aside>
+    </MenuProvider>
   )
 }
 
