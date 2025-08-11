@@ -96,3 +96,6 @@ Uses dotenv with environment-specific files:
 2. **Static WAR**: For deployment to Java application servers
 
 The `build.js` script handles packaging for both methods and creates compressed archives.
+
+## Git Workflow
+When merging branches, use `git merge --no-ff` to preserve branch history and create clear merge commits.
