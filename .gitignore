@@ -44,4 +44,4 @@ launch.json
 
 # web component
 public/js
-chrome_extension/elf-chrome-component.js
+bpm_elf_extension/elf-chrome-component.js
