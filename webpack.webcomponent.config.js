@@ -20,7 +20,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env', { targets: { browsers: ['> 1%', 'last 2 versions'] } }],
+              ['@babel/preset-env', { targets: '> 1%, last 2 versions' }],
               ['@babel/preset-react', { runtime: 'automatic' }],
             ],
             plugins: [
@@ -50,17 +50,9 @@ module.exports = {
       '@': path.resolve(__dirname, 'src'),
     },
   },
-  externals: {
-    // 如果老系統已經有這些依賴，可以設為 external
-    // 'react': 'React',
-    // 'react-dom': 'ReactDOM'
-  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NEXT_PUBLIC_WEB_COMPONENT_URL': `"${process.env.NEXT_PUBLIC_WEB_COMPONENT_URL}"`,
     }),
   ],
-  optimization: {
-    minimize: true,
-  },
 }

@@ -1,13 +1,13 @@
 {
     "manifest_version": 3,
-    "name": "BPM 開單小幫手 0.0.2",
+    "name": "BPM ELF 開單小幫手",
     "version": "0.0.2",
     "icons": {
         "48": "magician-hat.png"
     },
     "action": {
         "default_icon": "magician-hat.png",
-        "default_title": "BPM 開單小幫手 0.0.2"
+        "default_title": "BPM ELF 開單小幫手"
     },
     "background": {
         "service_worker": "background.js"
