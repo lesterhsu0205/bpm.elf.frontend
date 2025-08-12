@@ -1,236 +1,214 @@
-# BPM ELF Frontend
+# BPM ELF 開單小幫手
 
-[![Next.js](https://img.shields.io/badge/Next.js-14.1.4-black?logo=next.js&logoColor=white)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-18.3.1-blue?logo=react&logoColor=white)](https://reactjs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.17-38bdf8?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+一個基於 React 和 Next.js 的業務流程管理（BPM）前端應用程式，提供動態表單生成和 Chrome 瀏覽器擴充功能支援。
 
-一個基於 Next.js 的 BPM（Business Process Management）前端系統，提供動態表單生成、Web Components 以及 Chrome 擴展功能。
+## 專案概述
 
-## ✨ 主要特性
+BPM ELF 開單小幫手是一個企業級的表單管理系統，支援：
+- 動態表單配置與生成
+- Web Component 整合
+- Chrome 擴充功能支援
+- 多環境部署配置
 
-- 📝 **配置驅動的動態表單**：基於 JSON 配置自動渲染表單元素
-- 🔧 **多平台整合**：
-  - Next.js Web 應用程式
-  - Web Components（Modal 和直接渲染模式）
-  - Chrome 瀏覽器擴展
-- 🌍 **多環境支援**：支援 dev.local、dev、stg、uat、prod 等環境
-- 🔐 **SSL 整合**：內建 SSL 憑證配置支援
-- 📦 **模組化架構**：可重用的表單元件和組織化的檔案結構
+## 主要功能
 
-## 🚀 快速開始
+### 🔧 核心功能
+- **動態表單生成**：基於 JSON 配置自動生成表單介面
+- **Web Component**：可嵌入任何網頁的獨立組件
+- **Chrome 擴充功能**：瀏覽器原生整合支援
+- **多層選單系統**：支援複雜的導航結構
 
-### 環境要求
+### 📋 表單元素
+- 文字輸入框 (text.js)
+- 文字區域 (textArea.js) 
+- 單選按鈕 (radio.js)
+- 複選框 (checkbox.js)
+- 下拉選單 (select.js)
+- 描述文字 (description.js)
 
-- Node.js (推薦 16.x 或更高版本)
-- pnpm (推薦的套件管理器)
+### 🎨 UI 組件
+- 響應式佈局系統
+- Bootstrap 5 整合
+- Tailwind CSS 樣式
+- Material Tailwind 元件庫
+- React Toastify 通知系統
+
+## 技術架構
+
+### 前端技術棧
+- **框架**：React 18.3.1 + Next.js 14.1.4
+- **樣式**：Tailwind CSS + Bootstrap 5 + Material Tailwind
+- **狀態管理**：React Hook Form + Context API
+- **建構工具**：Webpack 5 + Babel
+- **字體**：Inter + Noto Sans TC
+
+### 專案結構
+```
+src/
+├── components/          # React 組件
+│   ├── formElements/   # 表單元素組件
+│   ├── chromeNavMegaMenu.js
+│   └── ...
+├── contexts/           # React Context
+├── pages/             # Next.js 頁面
+├── styles/            # 樣式檔案
+├── utils/             # 工具函數
+├── webComponent.js    # Web Component 主檔案
+└── chromeComponent.js # Chrome 擴充功能組件
+
+bpm_elf_extension/     # Chrome 擴充功能檔案
+├── manifest.json
+├── background.js
+└── ...
+```
+
+## 環境設定與安裝
+
+### 系統需求
+- Node.js 18+
+- pnpm 套件管理器
 
 ### 安裝依賴
-
 ```bash
 pnpm install
 ```
 
+### 環境配置
+建立對應的環境變數檔案：
+- `.env.dev.local` - 本地開發環境
+- `.env.dev` - 開發環境
+- `.env.stg` - 測試環境
+- `.env.uat` - 使用者驗收測試環境
+- `.env.prod` - 正式環境
+
+## 開發指令
+
 ### 本地開發
-
-啟動本地開發伺服器（包含 SSL 憑證和 Web Component 構建）：
-
 ```bash
-pnpm local
+# 啟動本地開發伺服器（含憑證）
+pnpm run local
 ```
 
-預設會在 `https://localhost:3000` 啟動應用程式。
-
-### 構建
-
-#### 環境特定構建
+### 建構指令
 ```bash
-# 本地開發環境
-pnpm run build:dev.local
-
-# 開發環境
-pnpm run build:dev
-
-# 測試環境
-pnpm run build:stg
-
-# UAT 環境
-pnpm run build:uat
-
-# 正式環境
-pnpm run build:prod
+# 建構各環境版本
+pnpm run build:dev.local    # 本地開發版本
+pnpm run build:dev          # 開發版本
+pnpm run build:stg          # 測試版本
+pnpm run build:uat          # UAT 版本
+pnpm run build:prod         # 正式版本
 ```
 
-#### 僅構建 Web Component
+### Web Component 建構
 ```bash
+# 建構 Web Component
 pnpm run build:webcomponent
+
+# 各環境 Web Component 建構
+pnpm run webcomponent:dev
+pnpm run webcomponent:stg
+pnpm run webcomponent:uat
+pnpm run webcomponent:prod
 ```
 
-### 生產啟動
+### 程式碼品質
+```bash
+# ESLint 檢查
+pnpm run lint
+```
 
+## 部署說明
+
+### 生產環境啟動
 ```bash
 pnpm start
 ```
 
-## 🏗️ 專案架構
+### 建構流程
+1. **Web Component 建構**：編譯獨立的 Web Component
+2. **Next.js 建構**：生成靜態網站檔案
+3. **伺服器建構**：打包伺服器相關檔案
 
-### 核心組件
+### 憑證管理
+專案包含 HTTPS 憑證支援：
+- 憑證位置：`certs/` 目錄
+- 自動載入 CA 憑證
+- 支援本地 HTTPS 開發
 
-- **`src/pages/[...applyItem].js`**：動態頁面路由，載入 JSON 配置
-- **`src/components/content.js`**：核心表單渲染引擎
-- **`src/webComponent.js`**：Modal 模式 Web Component
-- **`src/chromeComponent.js`**：Chrome 擴展組件
-- **`src/components/formElements/`**：模組化表單元件
+## Web Component 使用
 
-### 工作原理
-
-1. **路由**：`[...applyItem].js` 接收 `applyItem` 參數
-2. **配置載入**：從 `${BACKEND_URL}/api/setting/${applyItem}.json` 載入 JSON 配置
-3. **動態渲染**：`content.js` 處理配置並渲染對應的表單元素
-
-### 檔案結構
-
-```
-src/
-├── pages/                    # Next.js 頁面
-│   ├── [...applyItem].js    # 動態路由頁面
-│   ├── compose/             # 表單編輯頁面
-│   └── settings/            # 設定頁面
-├── components/              # React 組件
-│   ├── formElements/        # 表單元件
-│   │   ├── text.js         # 文字輸入
-│   │   ├── select.js       # 下拉選單
-│   │   ├── checkbox.js     # 複選框
-│   │   └── ...
-│   ├── content.js          # 核心內容渲染器
-│   └── layout.js           # 頁面佈局
-├── styles/                  # 樣式檔案
-└── utils/                   # 工具函數
-```
-
-## 🔧 Web Components
-
-### Modal 模式（推薦）
-
+### 基本用法
 ```html
+<!-- Modal 模式（推薦） -->
 <x-elf-wrapper-modal 
-  applyitem="vm" 
-  backendurl="http://localhost:3000/bpm-elf"
+  applyitem="your-form-config"
+  backendurl="https://your-backend-url"
   buttontext="開啟表單"
   buttonclass="btn btn-primary">
 </x-elf-wrapper-modal>
-
-<script src="path/to/elf-webcomponent.js"></script>
 ```
 
-### 直接渲染模式
+### 參數說明
+- `applyitem`: 表單配置項目名稱
+- `backendurl`: 後端 API 網址
+- `buttontext`: 觸發按鈕文字（預設：開啟頁面）
+- `buttonclass`: 按鈕 CSS 類別（預設：btn btn-primary）
 
-```html
-<x-elf-wrapper 
-  applyitem="vm" 
-  backendurl="http://localhost:3000/bpm-elf">
-</x-elf-wrapper>
+## Chrome 擴充功能
 
-<script src="path/to/elf-webcomponent.js"></script>
+詳細安裝和使用說明請參考 [README-chrome-extension.md](README-chrome-extension.md)。
+
+## API 整合
+
+### 表單配置 API
 ```
-
-詳細的 Web Component 使用說明請參閱 [README-webcomponent.md](./README-webcomponent.md)。
-
-## 🌐 環境配置
-
-系統支援多環境配置，使用對應的 `.env` 檔案：
-
-- `.env.dev.local` - 本地開發環境
-- `.env.dev` - 開發環境
-- `.env.stg` - 測試環境
-- `.env.uat` - UAT 環境
-- `.env.prod` - 正式環境
-
-### 關鍵環境變數
-
-```bash
-NEXT_PUBLIC_BACKEND_URL=http://localhost:3000/bpm-elf
-NEXT_PUBLIC_WEB_COMPONENT_URL=http://localhost:3000/bpm-elf
-NEXT_PUBLIC_FED_DIST_GOLD_DIR_PREFIX=/path/to/dist
+GET /api/setting/{formName}.json
 ```
+返回指定表單的 JSON 配置檔案。
 
-## 🔐 SSL 配置
+### 配置格式
+表單配置採用 JSON 格式，支援多種表單元素和驗證規則。
 
-專案內建 SSL 憑證支援，憑證檔案位於 `certs/` 目錄：
+## 開發注意事項
 
-- `lbtw.ca.starlbtwsys.20230719.20321231.crt`
-- `lbtw.ca.starlbtwsys.20230719.20321231.key`
-- `lbtw.ca.starlbtwsys.20230719.20321231.pem`
+### 安全性
+- 使用 Content Security Policy (CSP)
+- 避免在程式碼中暴露敏感資訊
+- 支援 HTTPS 開發環境
 
-`patch-https.js` 檔案負責配置 Node.js 使用這些憑證。
+### 效能最佳化
+- Web Component 獨立打包
+- 按需載入組件
+- 圖片資源最佳化
 
-## 📦 構建系統
+### 相容性
+- 支援現代瀏覽器
+- Chrome 擴充功能 Manifest V3
+- 響應式設計
 
-### Webpack 配置
+## 故障排除
 
-- **`webpack.webcomponent.config.js`**：構建 Web Component 到 `public/js/`
-- **`webpack.chrome.component.config.js`**：構建 Chrome 擴展到 `bpm_elf_extension/`
+### 常見問題
+1. **憑證錯誤**：確認 `certs/` 目錄中的憑證檔案存在
+2. **模組載入失敗**：檢查 `node_modules` 是否正確安裝
+3. **環境變數未載入**：確認對應的 `.env` 檔案存在
 
-### 後構建處理
+### 偵錯工具
+- 瀏覽器開發者工具
+- Chrome 擴充功能開發者模式
+- Next.js 內建偵錯功能
 
-`build.js` 腳本執行以下操作：
-- 創建部署套件
-- 生成 TAR 壓縮檔
-- 處理靜態資源
+## 貢獻指南
 
-### 部署模式
+1. Fork 專案
+2. 建立功能分支
+3. 提交變更
+4. 建立 Pull Request
 
-1. **Node.js Standalone**：使用 Next.js standalone 輸出和自訂伺服器
-2. **靜態 WAR**：用於部署到 Java 應用伺服器
+## 授權資訊
 
-## 🧪 開發與測試
+本專案為企業內部使用，保留所有權利。
 
-### 代碼檢查
+---
 
-```bash
-pnpm lint
-```
-
-### 本地測試
-
-訪問 `https://localhost:3000` 進行本地測試，或使用提供的測試 HTML 檔案。
-
-## 🚀 Chrome 擴展
-
-Chrome 擴展組件提供：
-- 巨型選單導航
-- 多頁面支援
-- 瀏覽器擴展整合
-
-構建的擴展檔案輸出至 `bpm_elf_extension/` 目錄。
-
-## 📋 可用指令
-
-```bash
-# 開發
-pnpm local                    # 本地開發伺服器
-pnpm lint                     # 代碼檢查
-
-# 構建
-pnpm run build:webcomponent   # 僅構建 Web Component
-pnpm run build:dev.local      # 本地開發環境構建
-pnpm run build:dev            # 開發環境構建
-pnpm run build:stg            # 測試環境構建
-pnpm run build:uat            # UAT 環境構建
-pnpm run build:prod           # 正式環境構建
-
-# 運行
-pnpm start                    # 生產伺服器啟動
-```
-
-## 🔧 技術棧
-
-- **前端框架**：Next.js 14.1.4, React 18.3.1
-- **樣式**：Tailwind CSS, Bootstrap, Material Tailwind
-- **表單**：React Hook Form
-- **構建工具**：Webpack 5, Babel
-- **Web Components**：react-to-webcomponent
-- **其他**：Lodash, React Bootstrap, React Toastify
-
-## 📝 授權
-
-此專案為私有專案，版權歸屬於相關組織。
+如有任何問題或建議，請聯繫開發團隊。
