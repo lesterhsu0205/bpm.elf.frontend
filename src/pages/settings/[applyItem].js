@@ -182,6 +182,13 @@ const DynamicPage = ({ applyItem, data }) => {
       return
     }
 
+    // 檢查是否有正在編輯的輸入框
+    const editingElements = document.querySelectorAll('.jer-confirm-buttons')
+    if (editingElements.length > 0) {
+      toast.warn('請先完成 JSON 編輯器中的修改（按 Enter/Ctrl+Enter 確認或 ESC 取消）')
+      return
+    }
+
     setNewFileName(`${newFileName}.json`)
 
     // 先處理資料
@@ -284,7 +291,14 @@ const DynamicPage = ({ applyItem, data }) => {
                     <Button
                       variant="secondary"
                       className="bs-secondary"
-                      onClick={() => router.back()}
+                      onClick={() => {
+                        const editingElements = document.querySelectorAll('.jer-confirm-buttons')
+                        if (editingElements.length > 0) {
+                          toast.warn('請先完成 JSON 編輯器中的修改（按 Enter/Ctrl+Enter 確認或 ESC 取消）')
+                          return
+                        }
+                        router.back()
+                      }}
                     >
                       取消
                     </Button>
