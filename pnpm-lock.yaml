@@ -30,8 +30,8 @@ importers:
         specifier: ^2.0.11
         version: 2.0.11
       json-edit-react:
-        specifier: ~1.23.1
-        version: 1.23.1(react@18.3.1)
+        specifier: ^1.28.2
+        version: 1.28.2(react@18.3.1)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -2202,8 +2202,8 @@ packages:
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
 
-  json-edit-react@1.23.1:
-    resolution: {integrity: sha512-UZvSvnuxT40IBedSH7NAPjiNq91foZFmfzUervV/HTJ04EPtXc6MpB/1VoHpeosMJOT+wXiIUEACflSagJC5DQ==}
+  json-edit-react@1.28.2:
+    resolution: {integrity: sha512-+ZsVXwnuOvuyqeQBDOxMS63JmF3VwHDrA0TtjSEBSBtR+lteHN/QjQohqFzsam7AHPu75AabGXciVf0H6ne+/g==}
     peerDependencies:
       react: '>=16.0.0'
 
@@ -5649,7 +5649,7 @@ snapshots:
 
   json-buffer@3.0.1: {}
 
-  json-edit-react@1.23.1(react@18.3.1):
+  json-edit-react@1.28.2(react@18.3.1):
     dependencies:
       object-property-assigner: 1.3.5
       object-property-extractor: 1.0.13
