@@ -6,16 +6,13 @@ const Checkbox = ({ label, idKey, options, ticketName = '' }) => {
     register,
   } = useFormContext({ mode: 'all' })
 
-  // 創建唯一的 ID 前綴，避免多單據間的 ID 衝突
-  const uniquePrefix = ticketName ? `${ticketName}_${idKey}` : idKey
-
   return (
     <Col className="d-flex">
       <Form.Label className="me-5">{label}</Form.Label>
       {options
         && options.length > 0
         && options.map((option, index) => {
-          const optionId = `${uniquePrefix}_${crypto.randomUUID()}_${index}`
+          const optionId = `${idKey}_${crypto.randomUUID()}_${index}`
           return (
             <Form.Check
               key={optionId}
