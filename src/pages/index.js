@@ -57,13 +57,13 @@ const TutorialPage = () => {
     },
     {
       id: 2,
-      image: '/bpm-elf/tutorial-step1.png',
+      image: '/bpm-elf/tutorial-step2.png',
       title: '步驟 2：建立及複製需求內容',
       description: '填寫表單資訊後按下建立及複製需求內容至剪貼簿'
     },
     {
       id: 3,
-      image: '/bpm-elf/tutorial-step1.png',
+      image: '/bpm-elf/tutorial-step3.png',
       title: '步驟 3：貼上至 BPM',
       description: '修改至滿意後把最終內容複製並貼上 BPM 需求單'
     }
