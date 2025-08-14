@@ -26,7 +26,7 @@ const Sidebar = () => {
         const result = await response.json()
 
         setData([
-          { name: 'ReleaseNote', url: '/', icon: 'home' },
+          { name: '歡迎', url: '/', icon: 'home' },
           ...result,
           {
             name: '建立模板',
