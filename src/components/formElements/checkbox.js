@@ -1,10 +1,16 @@
 import { Form, Col } from 'react-bootstrap'
 import { useFormContext } from 'react-hook-form'
+import { useMemo } from 'react'
 
 const Checkbox = ({ label, idKey, options, ticketName = '' }) => {
   const {
     register,
   } = useFormContext({ mode: 'all' })
+
+  const optionIds = useMemo(() => 
+    options?.map((_, index) => `${idKey}_${crypto.randomUUID()}_${index}`) || [],
+    [idKey, options]
+  )
 
   return (
     <Col className="d-flex">
@@ -12,13 +18,12 @@ const Checkbox = ({ label, idKey, options, ticketName = '' }) => {
       {options
         && options.length > 0
         && options.map((option, index) => {
-          const optionId = `${idKey}_${crypto.randomUUID()}_${index}`
           return (
             <Form.Check
-              key={optionId}
+              key={optionIds[index]}
               inline
               type="checkbox"
-              id={optionId}
+              id={optionIds[index]}
               name={idKey}
               label={option.text}
               value={option.text}
